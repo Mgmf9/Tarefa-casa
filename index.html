@@ -327,6 +327,7 @@ body::before{position:absolute;bottom:auto;height:560px}
 .tmsg{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;overflow-wrap:normal;padding-block:6px}
 .tundo{padding:7px 14px;font-size:.88rem}
 @keyframes tin{from{opacity:0;transform:translate(-50%,8px)}to{opacity:1;transform:translateX(-50%)}}
+#vHome .top .logo{width:36px;height:36px}
 </style>
 </head>
 <body>
@@ -377,13 +378,13 @@ body::before{position:absolute;bottom:auto;height:560px}
     <!-- calendário (tela inicial) -->
     <div id="vHome" class="stack">
       <header class="top">
+        <button class="sq" id="btnMenu" aria-label="Abrir menu e calendário" data-ic="menu"></button>
         <svg class="logo" aria-hidden="true"><use href="#logo"/></svg>
         <div class="grow">
           <div class="brand">Feito em Casa</div>
           <div class="sub" id="greet">Tudo o que eu fiz, anotado dia a dia</div>
         </div>
         <button class="sq" id="btnAgent" aria-label="Agente" data-ic="bot"></button>
-        <button class="sq" id="btnMenu" aria-label="Menu" data-ic="menu"></button>
       </header>
 
       <section class="ai" id="ai" aria-live="polite">
