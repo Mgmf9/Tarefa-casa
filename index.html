@@ -313,6 +313,20 @@ label.cb{display:inline-flex;align-items:center;gap:10px;font-weight:600;font-si
 .week span{font-size:.68rem;color:var(--muted);font-weight:700}
 .week em{font-style:normal;font-size:.75rem;font-weight:800}
 body.pais .side,body.pais .side-scrim{display:none}
+
+/* ===== desempenho no celular: sem desfoque de fundo e sombras leves ===== */
+.ai,.card,.svc,.scrim{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+.card,.svc{background:var(--panel);box-shadow:0 8px 20px -16px rgba(24,34,90,.35)}
+.ai{background:linear-gradient(135deg,var(--a12),transparent 70%),var(--panel);box-shadow:0 8px 20px -16px rgba(24,34,90,.35)}
+.slab{box-shadow:0 14px 30px -22px rgba(14,20,35,.6)}
+.scrim{background:rgba(5,8,20,.55)}
+body::before{position:absolute;bottom:auto;height:560px}
+.svc:active,.opt:active,.step:active{transform:scale(.97)}
+/* aviso compacto */
+.toast{width:max-content;max-width:calc(100% - 32px);padding:6px 6px 6px 16px;gap:10px;font-size:.92rem;animation:tin .16s ease-out}
+.tmsg{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;overflow-wrap:normal;padding-block:6px}
+.tundo{padding:7px 14px;font-size:.88rem}
+@keyframes tin{from{opacity:0;transform:translate(-50%,8px)}to{opacity:1;transform:translateX(-50%)}}
 </style>
 </head>
 <body>
@@ -934,7 +948,9 @@ function renderSvcs(){
     G.append(b);
   });
 }
-function render(){renderCal();renderStats();renderDay();renderSvcs();if(view==='agent')renderAgent();if(view==='pais')renderPais();barInfo()}
+const WIDE=window.matchMedia?window.matchMedia('(min-width:900px)'):{matches:false};
+const calVisible=()=>view==='home'||$('side').classList.contains('open')||WIDE.matches;
+function render(){if(calVisible()){renderCal();renderStats()}renderDay();renderSvcs();if(view==='agent')renderAgent();if(view==='pais')renderPais();barInfo()}
 function planLabel(p){const s=svcOf(p);return (s?s.name:p.n)+(p.v?' · '+p.v:'')}
 function planItem(x,p,inAgent){
   const on=planDone(x,p),li=el('li',on?'done':''),s=svcOf(p);
@@ -984,7 +1000,7 @@ function hideToast(){$('toast').hidden=true}
 function toast(msg,undo){
   const t=$('toast');t.innerHTML='';const sp=el('span','tmsg');sp.textContent=msg;t.append(sp);
   if(undo){const b=el('button','tundo','Desfazer');b.onclick=()=>{undo();hideToast()};t.append(b)}
-  t.hidden=false;clearTimeout(toastT);toastT=setTimeout(hideToast,undo?5000:1800);
+  t.hidden=false;clearTimeout(toastT);toastT=setTimeout(hideToast,undo?2500:1500);
 }
 function addLog(s,v){
   if(sel>todayKey()){toast('Esse dia ainda não chegou.');return}
@@ -1033,7 +1049,7 @@ function showView(v){
   if(v==='report')renderReport();else if(v==='edit')renderEdit();
   window.scrollTo(0,0);
 }
-function openSide(){$('side').classList.add('open');$('sideScrim').classList.add('on');$('wrap').inert=true}
+function openSide(){renderCal();$('side').classList.add('open');$('sideScrim').classList.add('on');$('wrap').inert=true}
 function closeSide(){if(!$('side').classList.contains('open'))return;$('side').classList.remove('open');$('sideScrim').classList.remove('on');$('wrap').inert=false}
 /* resumo */
 let rpKind='7';
