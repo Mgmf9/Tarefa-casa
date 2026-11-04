@@ -234,6 +234,85 @@ label.cb{display:inline-flex;align-items:center;gap:10px;font-weight:600;font-si
 .tmsg{padding-block:4px;min-width:0;overflow-wrap:anywhere}
 .tundo{padding:9px 16px;border-radius:999px;background:var(--accent);color:var(--on-accent);font-weight:800;flex:none}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* ===== v4: calendário como tela inicial, menu lateral, agente e painel dos pais ===== */
+.shell{min-height:100vh}
+.side{position:fixed;top:0;left:0;bottom:0;width:min(300px,86vw);z-index:36;background:var(--panel);border-right:1px solid var(--edge);
+  padding:max(14px,env(safe-area-inset-top,0px)) 14px calc(20px + env(safe-area-inset-bottom,0px)) max(14px,env(safe-area-inset-left,0px));
+  display:flex;flex-direction:column;gap:14px;overflow-y:auto;overscroll-behavior:contain;transform:translateX(-105%);visibility:hidden;
+  transition:transform .24s cubic-bezier(.2,.8,.2,1),visibility 0s .24s}
+.side.open{transform:none;visibility:visible;transition:transform .24s cubic-bezier(.2,.8,.2,1),visibility 0s;box-shadow:20px 0 50px -20px rgba(0,0,0,.45)}
+.side-scrim{z-index:35}
+.side-brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:-.02em}
+.side-brand .logo{width:30px;height:30px}
+.side-brand b{flex:1}
+.nav{display:flex;flex-direction:column;gap:2px}
+.nav .lbl{padding:12px 10px 6px}
+.nav button{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:14px;font-weight:600;color:var(--muted);text-align:left;position:relative}
+.nav button:hover{background:var(--soft);color:var(--fg)}
+.nav button.on{background:var(--a12);color:var(--accent)}
+.nav button.on::before{content:"";position:absolute;left:-14px;top:9px;bottom:9px;width:3px;border-radius:0 3px 3px 0;background:var(--accent)}
+.nav button svg{width:19px;height:19px}
+/* calendário compacto no menu */
+#sideCal .calcard{padding:14px;gap:10px;border-radius:22px;box-shadow:none;background:var(--soft)}
+#sideCal .mhead span:first-child{font-size:1.15rem}
+#sideCal .mhead #mYear{font-size:.75rem}
+#sideCal .sq{width:32px;height:32px}
+#sideCal .cal{gap:3px}
+#sideCal .cal .wd{font-size:.52rem;padding:0}
+#sideCal .d{border-radius:10px;font-size:.78rem;gap:1px}
+#sideCal .d .tk svg{transform:scale(.7)}
+#sideCal .d .pd{top:3px;right:3px;width:5px;height:5px}
+#sideCal .stats,#sideCal .legend{display:none}
+#sideCal .calfoot{justify-content:flex-end}
+.hint-home{text-align:center;color:var(--muted);font-size:.85rem;margin-top:-10px}
+/* barra de cima */
+.bar-top{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.bt-title{font-size:1.35rem;font-weight:800;letter-spacing:-.03em;line-height:1.1}
+@media (min-width:900px){
+  body.inapp .shell{display:grid;grid-template-columns:300px minmax(0,1fr)}
+  body.inapp .side{position:sticky;top:0;height:100vh;transform:none;visibility:visible;box-shadow:none;z-index:1;width:300px}
+  body.inapp .side-x,body.inapp #btnSide{display:none}
+  body.inapp .wrap{max-width:640px}
+}
+/* barra de progresso do plano */
+.pbar{height:8px;border-radius:99px;background:var(--sunk);overflow:hidden}
+.pbar i{display:block;height:100%;width:0;background:var(--accent);border-radius:99px;transition:width .3s}
+.slab .pbar{background:var(--s-sunk)}
+.tag.plan{background:var(--a16);color:var(--accent)}
+/* agente */
+.picker{display:flex;flex-direction:column;gap:10px;border-top:1px solid var(--edge);padding-top:12px}
+.pk{display:flex;flex-direction:column;gap:8px;padding:8px 0;border-bottom:1px solid var(--edge)}
+.pk-h{display:flex;align-items:center;gap:10px;font-weight:700}
+.pk .opts{padding-left:46px}
+.opt[aria-pressed="true"]{background:var(--accent);color:var(--on-accent)}
+.chatcard{gap:12px}
+.chat{display:flex;flex-direction:column;gap:8px;max-height:52vh;min-height:120px;overflow-y:auto;overscroll-behavior:contain;padding:2px}
+.msg-b{max-width:86%;padding:10px 14px;border-radius:18px;font-size:.95rem;line-height:1.4;white-space:pre-line;overflow-wrap:anywhere}
+.msg-b.me{align-self:flex-end;background:var(--accent);color:var(--on-accent);border-bottom-right-radius:6px}
+.msg-b.bot{align-self:flex-start;background:var(--soft);border-bottom-left-radius:6px}
+.msg-b.wait{opacity:.6}
+.qchips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.qchips::-webkit-scrollbar{display:none}
+.qchips button{flex:none;padding:8px 14px;border-radius:99px;background:var(--a12);color:var(--accent);font-weight:700;font-size:.86rem}
+/* escolha de perfil */
+.modepick{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px 16px;max-width:440px;margin:0 auto;text-align:center}
+.logo.big{width:76px;height:76px;margin-bottom:6px}
+.modebtn{width:100%;display:flex;align-items:center;gap:14px;padding:18px;border-radius:24px;background:var(--panel);border:1px solid var(--edge);text-align:left;box-shadow:var(--shadow)}
+.modebtn b{display:block;font-size:1.05rem}
+.modebtn small{color:var(--muted);font-size:.85rem}
+/* painel dos pais */
+.pcard{display:flex;flex-direction:column;gap:12px}
+.pbig{display:flex;align-items:baseline;gap:10px}
+.pbig b{font-size:3.2rem;line-height:1;font-weight:800;letter-spacing:-.05em}
+.pbig span{color:var(--muted);font-weight:600}
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;align-items:end;height:120px}
+.week div{display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;justify-content:flex-end}
+.week i{display:block;width:100%;max-width:30px;border-radius:8px 8px 4px 4px;background:var(--accent);min-height:3px}
+.week i.zero{background:var(--sunk)}
+.week span{font-size:.68rem;color:var(--muted);font-weight:700}
+.week em{font-style:normal;font-size:.75rem;font-weight:800}
+body.pais .side,body.pais .side-scrim{display:none}
 </style>
 </head>
 <body>
@@ -250,132 +329,226 @@ label.cb{display:inline-flex;align-items:center;gap:10px;font-weight:600;font-si
   </defs>
 </svg>
 
-<div class="wrap" id="wrap">
+<!-- escolha de perfil (primeira vez) -->
+<div class="modepick" id="vMode" hidden>
+  <svg class="logo big" aria-hidden="true"><use href="#logo"/></svg>
+  <h1 class="h1">Feito em Casa</h1>
+  <p class="empty">Quem está usando este aparelho?</p>
+  <button class="modebtn" id="pickFilho"><span class="li-ic" data-ic="user"></span><span><b>Sou o filho</b><small>Anotar e organizar as tarefas</small></span></button>
+  <button class="modebtn" id="pickPais"><span class="li-ic" data-ic="users"></span><span><b>Sou pai ou mãe</b><small>Só ver os resultados</small></span></button>
+</div>
 
-  <!-- tela principal -->
-  <div id="vMain" class="stack">
-    <header class="top">
-      <svg class="logo" aria-hidden="true"><use href="#logo"/></svg>
-      <div class="grow">
-        <div class="brand">Feito em Casa</div>
-        <div class="sub" id="greet">Tudo o que eu fiz, anotado dia a dia</div>
+<div class="shell" id="shell">
+  <!-- menu lateral: calendário pequeno + navegação -->
+  <aside class="side" id="side" aria-label="Menu">
+    <div class="side-brand"><svg class="logo" aria-hidden="true"><use href="#logo"/></svg><b>Feito em Casa</b><button class="sq ghost side-x" id="sideClose" aria-label="Fechar menu" data-ic="x"></button></div>
+    <div id="sideCal"></div>
+    <nav class="nav" id="nav">
+      <span class="lbl">Principal</span>
+      <button data-go="home"><span data-ic="calendar"></span>Calendário</button>
+      <button data-go="day"><span data-ic="listcheck"></span>Dia selecionado</button>
+      <button data-go="agent"><span data-ic="bot"></span>Agente</button>
+      <span class="lbl">Análise</span>
+      <button data-go="report"><span data-ic="report"></span>Resumo</button>
+      <button data-go="pais"><span data-ic="eye"></span>O que os pais veem</button>
+      <span class="lbl">Sistema</span>
+      <button data-go="edit"><span data-ic="gear"></span>Personalizar</button>
+      <button id="swapMode"><span data-ic="swap"></span>Trocar perfil</button>
+    </nav>
+  </aside>
+  <div class="scrim side-scrim" id="sideScrim"></div>
+
+  <main class="wrap" id="wrap">
+
+    <!-- calendário (tela inicial) -->
+    <div id="vHome" class="stack">
+      <header class="top">
+        <svg class="logo" aria-hidden="true"><use href="#logo"/></svg>
+        <div class="grow">
+          <div class="brand">Feito em Casa</div>
+          <div class="sub" id="greet">Tudo o que eu fiz, anotado dia a dia</div>
+        </div>
+        <button class="sq" id="btnAgent" aria-label="Agente" data-ic="bot"></button>
+        <button class="sq" id="btnMenu" aria-label="Menu" data-ic="menu"></button>
+      </header>
+
+      <section class="ai" id="ai" aria-live="polite">
+        <div class="head">
+          <i class="dot"></i>
+          <span class="lbl">Lembrete · <span id="aiTime">--:--</span><span class="aibadge" id="aiBadge" hidden>IA</span></span>
+          <button class="sq" id="aiRe" aria-label="Gerar outro lembrete" data-ic="redo"></button>
+        </div>
+        <p id="aiText"></p>
+      </section>
+
+      <div id="homeCal">
+        <section class="card calcard" id="calCard" aria-label="Calendário">
+          <div class="mhead">
+            <div><span id="mName">Novembro</span><span id="mYear">2026</span></div>
+            <div class="row">
+              <button class="sq" id="mPrev" aria-label="Mês anterior" data-ic="left"></button>
+              <button class="sq" id="mNext" aria-label="Próximo mês" data-ic="right"></button>
+            </div>
+          </div>
+          <div class="cal" id="cal"></div>
+          <div class="row between calfoot">
+            <div class="legend">
+              <span class="lbl"><span class="t2"><i></i><i></i><i></i></span>feitos</span>
+              <span class="lbl"><i class="pd2"></i>pendência</span>
+            </div>
+            <button class="link" id="goToday">Hoje</button>
+          </div>
+          <div class="stats" id="stats"></div>
+        </section>
       </div>
-      <button class="sq" id="btnReport" aria-label="Resumo e relatório" data-ic="report"></button>
-      <button class="sq" id="btnEdit" aria-label="Personalizar" data-ic="gear"></button>
+      <p class="hint-home">Toque num dia para ver e registrar as tarefas.</p>
+    </div>
+
+    <!-- barra de cima das outras telas -->
+    <header class="bar-top" id="barTop" hidden>
+      <button class="sq" id="btnSide" aria-label="Abrir menu e calendário" data-ic="menu"></button>
+      <div class="grow"><div class="bt-title" id="btTitle">Dia</div><div class="sub" id="btSub"></div></div>
+      <button class="sq" id="btnAgent2" aria-label="Agente" data-ic="bot"></button>
     </header>
 
-    <section class="ai" id="ai" aria-live="polite">
-      <div class="head">
-        <i class="dot"></i>
-        <span class="lbl">Lembrete · <span id="aiTime">--:--</span><span class="aibadge" id="aiBadge" hidden>IA</span></span>
-        <button class="sq" id="aiRe" aria-label="Gerar outro lembrete" data-ic="redo"></button>
-      </div>
-      <p id="aiText"></p>
-    </section>
-
-    <section class="card" aria-label="Calendário">
-      <div class="mhead">
-        <div><span id="mName">Novembro</span><span id="mYear">2026</span></div>
-        <div class="row">
-          <button class="sq" id="mPrev" aria-label="Mês anterior" data-ic="left"></button>
-          <button class="sq" id="mNext" aria-label="Próximo mês" data-ic="right"></button>
+    <!-- dia selecionado -->
+    <div id="vDay" class="stack" hidden>
+      <section class="slab" id="slab" aria-label="Dia selecionado">
+        <div class="dayhead">
+          <div class="dnum" id="dNum">04</div>
+          <div class="dmeta"><span class="mon" id="dMon"></span><span class="wdl" id="dWd"></span><span class="dsum" id="dTotal"></span></div>
         </div>
-      </div>
-      <div class="cal" id="cal"></div>
-      <div class="row between">
-        <div class="legend">
-          <span class="lbl"><span class="t2"><i></i><i></i><i></i></span>serviços feitos</span>
-          <span class="lbl"><i class="pd2"></i>pendência</span>
+
+        <div class="sect">
+          <div class="row between"><span class="lbl">A fazer</span><button class="link" id="openAgent">Montar com o agente</button></div>
+          <div class="pbar" id="pbar" hidden><i></i></div>
+          <ul class="list" id="todo"></ul>
+          <form class="row" id="todoForm">
+            <input type="text" id="todoIn" placeholder="Anotar tarefa para este dia" autocomplete="off" maxlength="120" aria-label="Nova tarefa">
+            <button class="btn" type="submit" aria-label="Adicionar tarefa" data-ic="plus"></button>
+          </form>
         </div>
-        <button class="link" id="goToday">Hoje</button>
-      </div>
-      <div class="stats" id="stats"></div>
-    </section>
 
-    <section class="slab" id="slab" aria-label="Dia selecionado">
-      <div class="dayhead">
-        <div class="dnum" id="dNum">04</div>
-        <div class="dmeta"><span class="mon" id="dMon"></span><span class="wdl" id="dWd"></span><span class="dsum" id="dTotal"></span></div>
-      </div>
+        <div class="sect">
+          <div class="row between"><span class="lbl">Feito</span><button class="link" id="share">Compartilhar</button></div>
+          <ul class="list" id="log"></ul>
+          <p class="empty box" id="logEmpty">Nada registrado ainda. Toque num serviço abaixo.</p>
+        </div>
+      </section>
 
-      <div class="sect">
-        <span class="lbl">A fazer</span>
-        <ul class="list" id="todo"></ul>
-        <form class="row" id="todoForm">
-          <input type="text" id="todoIn" placeholder="Anotar tarefa para este dia" autocomplete="off" maxlength="120" aria-label="Nova tarefa">
-          <button class="btn" type="submit" aria-label="Adicionar tarefa" data-ic="plus"></button>
+      <section style="display:flex;flex-direction:column;gap:12px">
+        <div class="sec-h"><span class="lbl" id="svTitle">Registrar serviço feito</span></div>
+        <div class="grid" id="svcs"></div>
+        <p class="empty box" id="svEmpty" hidden>Você ainda não tem serviços. Abra Personalizar no menu para criar o primeiro.</p>
+      </section>
+    </div>
+
+    <!-- agente -->
+    <div id="vAgent" class="stack" hidden>
+      <section class="card">
+        <div class="row between"><h3 class="h3" id="agPlanTitle">Plano do dia</h3><button class="btn soft sm" id="agEdit">Escolher serviços</button></div>
+        <div class="pbar" id="agBar"><i></i></div>
+        <ul class="list" id="agPlan"></ul>
+        <p class="empty" id="agEmpty">Nenhum serviço no plano. Toque em “Escolher serviços”.</p>
+        <div class="picker" id="agPick" hidden>
+          <span class="lbl">Toque no que você precisa fazer</span>
+          <div id="agPickList"></div>
+          <div class="row"><button class="btn accent" id="agPickOk">Salvar plano</button><button class="btn soft" id="agPickNo">Cancelar</button></div>
+        </div>
+      </section>
+      <section class="card chatcard">
+        <div class="chat" id="chat" aria-live="polite"></div>
+        <div class="qchips" id="qchips">
+          <button data-q="O que falta?">O que falta?</button>
+          <button data-q="O que eu já fiz?">O que eu já fiz?</button>
+          <button data-q="Quanto falta?">Quanto falta?</button>
+          <button data-q="Montar meu dia">Montar meu dia</button>
+        </div>
+        <form class="row" id="askForm">
+          <input type="text" id="askIn" placeholder="Pergunte: o que falta?" autocomplete="off" maxlength="200" aria-label="Pergunta para o agente">
+          <button class="btn accent" type="submit" aria-label="Enviar" data-ic="send"></button>
         </form>
-      </div>
+      </section>
+    </div>
 
-      <div class="sect">
-        <div class="row between"><span class="lbl">Feito</span><button class="link" id="share">Compartilhar</button></div>
-        <ul class="list" id="log"></ul>
-        <p class="empty box" id="logEmpty">Nada registrado ainda. Toque num serviço abaixo.</p>
+    <!-- resumo -->
+    <div id="vReport" class="stack" hidden>
+      <div class="seg" role="tablist" aria-label="Período" id="rpSeg">
+        <button role="tab" data-k="7">7 dias</button>
+        <button role="tab" data-k="30">30 dias</button>
+        <button role="tab" data-k="mes">Mês</button>
       </div>
-    </section>
+      <section class="card" id="rpCard" aria-live="polite"></section>
+      <div class="row">
+        <button class="btn accent ic" id="rpShare"></button>
+        <button class="btn soft ic" id="rpCopy"></button>
+      </div>
+    </div>
 
-    <section style="display:flex;flex-direction:column;gap:12px">
-      <div class="sec-h"><span class="lbl" id="svTitle">Registrar serviço feito</span></div>
-      <div class="grid" id="svcs"></div>
-      <p class="empty box" id="svEmpty" hidden>Você ainda não tem serviços. Toque na engrenagem lá em cima para criar o primeiro.</p>
-    </section>
+    <!-- painel dos pais (só resultados) -->
+    <div id="vPais" class="stack" hidden>
+      <header class="top" id="paisTop">
+        <svg class="logo" aria-hidden="true"><use href="#logo"/></svg>
+        <div class="grow"><div class="brand">Feito em Casa</div><div class="sub" id="paisSub">Painel dos pais</div></div>
+        <button class="sq" id="paisRe" aria-label="Atualizar" data-ic="redo"></button>
+      </header>
+      <div id="paisBody" class="stack"></div>
+      <p class="status" id="paisStatus"></p>
+      <button class="link" id="paisSwap" style="align-self:center">Trocar perfil</button>
+    </div>
+
+    <!-- personalizar -->
+    <div id="vEdit" class="stack" hidden>
+      <section class="card">
+        <div><h3 class="h3">Rotina de todo dia</h3><p class="empty" style="margin-top:4px">Aparece em todos os dias para você marcar.</p></div>
+        <ul class="list" id="rtList"></ul>
+        <p class="empty" id="rtEmpty" hidden>Nenhum item na rotina.</p>
+        <form class="row" id="rtForm"><input type="text" id="rtIn" placeholder="Ex: Dar comida ao gato" autocomplete="off" maxlength="80" aria-label="Novo item da rotina"><button class="btn" type="submit" aria-label="Adicionar à rotina" data-ic="plus"></button></form>
+      </section>
+
+      <section class="card" style="gap:6px">
+        <div><h3 class="h3">Serviços</h3><p class="empty" style="margin-top:4px">Toque num serviço para mudar nome, ícone e opções.</p></div>
+        <form class="row" id="svcForm" style="padding-block:6px"><input type="text" id="svcIn" placeholder="Ex: Regar as plantas" autocomplete="off" maxlength="60" aria-label="Novo serviço"><button class="btn" type="submit">+ Serviço</button></form>
+        <div id="edList"></div>
+      </section>
+
+      <section class="card" data-sa id="shareCard">
+        <div><h3 class="h3">Painel dos pais</h3><p class="empty" style="margin-top:4px">Seus pais abrem um link e veem só os resultados, no celular deles, sem login. Precisa do Worker configurado aqui embaixo.</p></div>
+        <div class="row" style="flex-wrap:wrap"><button class="btn sm" id="shOn">Criar link dos pais</button><button class="btn soft sm" id="shSend" hidden>Enviar link</button><button class="btn soft sm danger" id="shOff" hidden>Desligar</button></div>
+        <input type="text" id="shLink" readonly hidden aria-label="Link dos pais">
+        <p class="msg" id="shMsg" role="status"></p>
+      </section>
+
+      <section class="card" data-sa id="aiCfg">
+        <div><h3 class="h3">Worker (IA e painel dos pais)</h3><p class="empty" style="margin-top:4px">Cole o endereço do seu Worker da Cloudflare (veja o LEIA-ME). Sem ele, o agente e o lembrete funcionam no modo simples e o painel dos pais só funciona neste aparelho.</p></div>
+        <div class="row"><input type="url" id="aiUrl" placeholder="https://…workers.dev" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Endereço do Worker"></div>
+        <div class="row"><button class="btn sm" id="aiSave">Salvar</button><button class="btn soft sm" id="aiTest">Testar</button></div>
+        <p class="msg" id="aiMsg" role="status"></p>
+      </section>
+
+      <section class="card">
+        <div><h3 class="h3">Backup dos dados</h3><p class="empty" style="margin-top:4px">Seus dados ficam neste aparelho. Guarde um backup de vez em quando.</p></div>
+        <div class="row" style="flex-wrap:wrap"><button class="btn sm" id="bkCopy">Copiar backup</button><button class="btn soft sm" id="bkFile" data-sa>Salvar arquivo</button></div>
+        <textarea id="bkText" placeholder="Para restaurar, cole aqui o backup copiado" aria-label="Texto do backup" spellcheck="false"></textarea>
+        <div class="row" style="flex-wrap:wrap"><button class="btn soft sm" id="bkRestore">Restaurar</button><label class="btn soft sm" for="bkPick" style="cursor:pointer">Escolher arquivo</label><input type="file" id="bkPick" accept=".json,application/json" hidden></div>
+        <p class="msg" id="bkMsg" role="status"></p>
+      </section>
+
+      <section class="card">
+        <div><h3 class="h3">Começar do zero</h3><p class="empty" style="margin-top:4px">Apaga todos os dias registrados, planos e anotações (inclusive hoje). Seus serviços e a rotina continuam. Faça um backup antes se quiser guardar.</p></div>
+        <div class="row"><button class="btn soft sm danger" id="zeroBtn">Zerar tudo</button></div>
+        <p class="msg" id="zeroMsg" role="status"></p>
+      </section>
+
+      <section class="card" data-sa id="instCard">
+        <div><h3 class="h3">Instalar no iPhone</h3></div>
+        <ol class="steps"><li>Abra este site no Safari.</li><li>Toque em Compartilhar e depois em “Adicionar à Tela de Início”.</li><li>Abra pelo ícone novo. Os dados do app ficam separados dos do Safari, então use o backup para levar tudo.</li></ol>
+        <div class="row"><button class="btn soft sm" id="forceUp">Atualizar o app agora</button></div>
+      </section>
+      <div class="status" id="ver"></div>
+    </div>
     <div class="status" id="status"></div>
-  </div>
-
-  <!-- resumo -->
-  <div id="vReport" class="stack" hidden>
-    <div class="row between"><h2 class="h1">Resumo</h2><button class="btn" id="rpBack">Voltar</button></div>
-    <div class="seg" role="tablist" aria-label="Período" id="rpSeg">
-      <button role="tab" data-k="7">7 dias</button>
-      <button role="tab" data-k="30">30 dias</button>
-      <button role="tab" data-k="mes">Mês</button>
-    </div>
-    <section class="card" id="rpCard" aria-live="polite"></section>
-    <div class="row">
-      <button class="btn accent ic" id="rpShare"></button>
-      <button class="btn soft ic" id="rpCopy"></button>
-    </div>
-  </div>
-
-  <!-- personalizar -->
-  <div id="vEdit" class="stack" hidden>
-    <div class="row between"><h2 class="h1">Personalizar</h2><button class="btn" id="edDone">Pronto</button></div>
-
-    <section class="card">
-      <div><h3 class="h3">Rotina de todo dia</h3><p class="empty" style="margin-top:4px">Aparece em todos os dias para você marcar.</p></div>
-      <ul class="list" id="rtList"></ul>
-      <p class="empty" id="rtEmpty" hidden>Nenhum item na rotina.</p>
-      <form class="row" id="rtForm"><input type="text" id="rtIn" placeholder="Ex: Dar comida ao gato" autocomplete="off" maxlength="80" aria-label="Novo item da rotina"><button class="btn" type="submit" aria-label="Adicionar à rotina" data-ic="plus"></button></form>
-    </section>
-
-    <section class="card" style="gap:6px">
-      <div><h3 class="h3">Serviços</h3><p class="empty" style="margin-top:4px">Toque num serviço para mudar nome, ícone e opções.</p></div>
-      <form class="row" id="svcForm" style="padding-block:6px"><input type="text" id="svcIn" placeholder="Ex: Regar as plantas" autocomplete="off" maxlength="60" aria-label="Novo serviço"><button class="btn" type="submit">+ Serviço</button></form>
-      <div id="edList"></div>
-    </section>
-
-    <section class="card" data-sa id="aiCfg">
-      <div><h3 class="h3">Lembrete com IA</h3><p class="empty" style="margin-top:4px">Opcional. Cole o endereço do Worker que guarda a chave da Groq (veja o LEIA-ME). Sem isso, o lembrete usa um texto simples.</p></div>
-      <div class="row"><input type="url" id="aiUrl" placeholder="https://…workers.dev" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Endereço do Worker"></div>
-      <div class="row"><button class="btn sm" id="aiSave">Salvar</button><button class="btn soft sm" id="aiTest">Testar</button></div>
-      <p class="msg" id="aiMsg" role="status"></p>
-    </section>
-
-    <section class="card">
-      <div><h3 class="h3">Backup dos dados</h3><p class="empty" style="margin-top:4px">Seus dados ficam só neste aparelho. Guarde um backup de vez em quando.</p></div>
-      <div class="row" style="flex-wrap:wrap"><button class="btn sm" id="bkCopy">Copiar backup</button><button class="btn soft sm" id="bkFile" data-sa>Salvar arquivo</button></div>
-      <textarea id="bkText" placeholder="Para restaurar, cole aqui o backup copiado" aria-label="Texto do backup" spellcheck="false"></textarea>
-      <div class="row" style="flex-wrap:wrap"><button class="btn soft sm" id="bkRestore">Restaurar</button><label class="btn soft sm" for="bkPick" style="cursor:pointer">Escolher arquivo</label><input type="file" id="bkPick" accept=".json,application/json" hidden></div>
-      <p class="msg" id="bkMsg" role="status"></p>
-    </section>
-
-    <section class="card" data-sa id="instCard">
-      <div><h3 class="h3">Instalar no iPhone</h3></div>
-      <ol class="steps"><li>Abra este site no Safari.</li><li>Toque em Compartilhar e depois em “Adicionar à Tela de Início”.</li><li>Abra pelo ícone novo. Os dados do app ficam separados dos do Safari, então use o backup para levar tudo.</li></ol>
-      <div class="row"><button class="btn soft sm" id="forceUp">Atualizar o app agora</button></div>
-    </section>
-    <div class="status" id="ver"></div>
-  </div>
+  </main>
 </div>
 
 <!-- folha de opções -->
@@ -389,12 +562,12 @@ label.cb{display:inline-flex;align-items:center;gap:10px;font-weight:600;font-si
 <div class="toast" id="toast" role="status" hidden></div>
 <script>
 /* Ícones: Lucide (ISC) e Tabler Icons (MIT), mais o aspirador desenhado à mão. Veja LICENSES.txt */
-const ICON_SVG={"aspirar":"<rect x=\"2\" y=\"11.5\" width=\"13\" height=\"7.5\" rx=\"3.75\"/><path d=\"M15 15.2h1.3a2.7 2.7 0 0 0 2.7-2.7V4\"/><path d=\"M16.2 4H21.5\"/><circle cx=\"5.8\" cy=\"21\" r=\"1\"/><circle cx=\"11.2\" cy=\"21\" r=\"1\"/><path d=\"M6 15.2h3.5\"/>","vassoura":"<path d=\"M13.5 10.5 22 2\" /><path d=\"M14.734 13.841a2 2 0 00-.314-2.42L12.58 9.58a2 2 0 00-2.421-.314l-7.657 4.461A1 1 0 002.3 15.3l6.403 6.403a1 1 0 001.571-.204z\" /><path d=\"m5 18 2-2\" /><path d=\"m7.699 10.7 5.602 5.601\" />","balde":"<path d=\"M4 7a8 4 0 1 0 16 0a8 4 0 1 0 -16 0\" /><path d=\"M4 7c0 .664 .088 1.324 .263 1.965l2.737 10.035c.5 1.5 2.239 2 5 2s4.5 -.5 5 -2c.333 -1 1.246 -4.345 2.737 -10.035a7.45 7.45 0 0 0 .263 -1.965\" />","spray":"<path d=\"M4 12a2 2 0 0 1 2 -2h4a2 2 0 0 1 2 2v7a2 2 0 0 1 -2 2h-4a2 2 0 0 1 -2 -2l0 -7\" /><path d=\"M6 10v-4a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v4\" /><path d=\"M15 7h.01\" /><path d=\"M18 9h.01\" /><path d=\"M18 5h.01\" /><path d=\"M21 3h.01\" /><path d=\"M21 7h.01\" /><path d=\"M21 11h.01\" /><path d=\"M10 7h1\" />","brilho":"<path d=\"M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z\" /><path d=\"M20 2v4\" /><path d=\"M22 4h-4\" /><circle cx=\"4\" cy=\"20\" r=\"2\" />","limpeza":"<path d=\"m16 22-1-4\" /><path d=\"M19 14a1 1 0 0 0 1-1v-1a2 2 0 0 0-2-2h-3a1 1 0 0 1-1-1V4a2 2 0 0 0-4 0v5a1 1 0 0 1-1 1H6a2 2 0 0 0-2 2v1a1 1 0 0 0 1 1\" /><path d=\"M19 14H5l-1.973 6.767A1 1 0 0 0 4 22h16a1 1 0 0 0 .973-1.233z\" /><path d=\"m8 22 1-4\" />","lixo":"<path d=\"M10 11v6\" /><path d=\"M14 11v6\" /><path d=\"M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6\" /><path d=\"M3 6h18\" /><path d=\"M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2\" />","reciclagem":"<path d=\"M7 19H4.815a1.83 1.83 0 0 1-1.57-.881 1.785 1.785 0 0 1-.004-1.784L7.196 9.5\" /><path d=\"M11 19h8.203a1.83 1.83 0 0 0 1.556-.89 1.784 1.784 0 0 0 0-1.775l-1.226-2.12\" /><path d=\"m14 16-3 3 3 3\" /><path d=\"M8.293 13.596 7.196 9.5 3.1 10.598\" /><path d=\"m9.344 5.811 1.093-1.892A1.83 1.83 0 0 1 11.985 3a1.784 1.784 0 0 1 1.546.888l3.943 6.843\" /><path d=\"m13.378 9.633 4.096 1.098 1.097-4.096\" />","janela":"<path d=\"M12 3c-3.866 0 -7 3.272 -7 7v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1 -1v-10c0 -3.728 -3.134 -7 -7 -7\" /><path d=\"M5 13l14 0\" /><path d=\"M12 3l0 18\" />","banho":"<path d=\"M10 4 8 6\" /><path d=\"M17 19v2\" /><path d=\"M2 12h20\" /><path d=\"M7 19v2\" /><path d=\"M9 5 7.621 3.621A2.121 2.121 0 0 0 4 5v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5\" />","chuveiro":"<path d=\"m4 4 2.5 2.5\" /><path d=\"M13.5 6.5a4.95 4.95 0 0 0-7 7\" /><path d=\"M15 5 5 15\" /><path d=\"M14 17v.01\" /><path d=\"M10 16v.01\" /><path d=\"M13 13v.01\" /><path d=\"M16 10v.01\" /><path d=\"M11 20v.01\" /><path d=\"M17 14v.01\" /><path d=\"M20 11v.01\" />","vaso":"<path d=\"M7 12h13a1 1 0 0 1 1 1 5 5 0 0 1-5 5h-.598a.5.5 0 0 0-.424.765l1.544 2.47a.5.5 0 0 1-.424.765H5.402a.5.5 0 0 1-.424-.765L7 18\" /><path d=\"M8 18a5 5 0 0 1-5-5V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8\" />","lavar":"<path d=\"M3.486 8.965c.168 .02 .34 .033 .514 .035c.79 .009 1.539 -.178 2 -.5c.426 -.296 .777 -.5 1.5 -.5h1\" /><path d=\"M16 8l.615 .034c.552 .067 1.046 .23 1.385 .466c.461 .322 1.21 .509 2 .5c.17 0 .339 -.014 .503 -.034\" /><path d=\"M14 10.5l.586 .578a1.516 1.516 0 0 0 2 0c.476 -.433 .55 -1.112 .176 -1.622l-1.762 -2.456c-.37 -.506 -1.331 -1 -2 -1h-3.117a1 1 0 0 0 -.992 .876l-.499 3.986a3.857 3.857 0 0 0 2.608 4.138a2.28 2.28 0 0 0 3 -2.162v-2.338\" /><path d=\"M3 6l1.721 10.329a2 2 0 0 0 1.973 1.671h10.612a2 2 0 0 0 1.973 -1.671l1.721 -10.329\" />","pratos":"<path d=\"M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2\" /><path d=\"M7 2v20\" /><path d=\"M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7\" />","comida":"<path d=\"M4 11h16a1 1 0 0 1 1 1v.5c0 1.5 -2.517 5.573 -4 6.5v1a1 1 0 0 1 -1 1h-8a1 1 0 0 1 -1 -1v-1c-1.687 -1.054 -4 -5 -4 -6.5v-.5a1 1 0 0 1 1 -1\" /><path d=\"M12 4a2.4 2.4 0 0 0 -1 2a2.4 2.4 0 0 0 1 2\" /><path d=\"M16 4a2.4 2.4 0 0 0 -1 2a2.4 2.4 0 0 0 1 2\" /><path d=\"M8 4a2.4 2.4 0 0 0 -1 2a2.4 2.4 0 0 0 1 2\" />","panela":"<path d=\"M2 12h20\" /><path d=\"M20 12v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8\" /><path d=\"m4 8 16-4\" /><path d=\"m8.86 6.78-.45-1.81a2 2 0 0 1 1.45-2.43l1.94-.48a2 2 0 0 1 2.43 1.46l.45 1.8\" />","geladeira":"<path d=\"M5 6a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6Z\" /><path d=\"M5 10h14\" /><path d=\"M15 7v6\" />","microondas":"<rect width=\"20\" height=\"15\" x=\"2\" y=\"4\" rx=\"2\" /><rect width=\"8\" height=\"7\" x=\"6\" y=\"8\" rx=\"1\" /><path d=\"M18 8v7\" /><path d=\"M6 19v2\" /><path d=\"M18 19v2\" />","copo":"<path d=\"m6 8 1.75 12.28a2 2 0 0 0 2 1.72h4.54a2 2 0 0 0 2-1.72L18 8\" /><path d=\"M5 8h14\" /><path d=\"M7 15a6.47 6.47 0 0 1 5 0 6.47 6.47 0 0 0 5 0\" /><path d=\"m12 8 1-6h2\" />","roupa":"<path d=\"M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z\" />","maquina":"<path d=\"M3 6h3\" /><path d=\"M17 6h.01\" /><rect width=\"18\" height=\"20\" x=\"3\" y=\"2\" rx=\"2\" /><circle cx=\"12\" cy=\"13\" r=\"5\" /><path d=\"M12 18a2.5 2.5 0 0 0 0-5 2.5 2.5 0 0 1 0-5\" />","cabide":"<path d=\"M14 6a2 2 0 1 0 -4 0c0 1.667 .67 3 2 4h-.008l7.971 4.428a2 2 0 0 1 1.029 1.749v.823a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-.823a2 2 0 0 1 1.029 -1.749l7.971 -4.428\" />","ferro":"<path d=\"M12 19v2\" /><path d=\"M9 4h7.459a3 3 0 0 1 2.959 2.507l.577 3.464l.81 4.865a1 1 0 0 1 -.985 1.164h-16.82a7 7 0 0 1 7 -7h9.8\" /><path d=\"M8 19l-1 2\" /><path d=\"M16 19l1 2\" />","cama":"<path d=\"M2 20v-8a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v8\" /><path d=\"M4 10V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v4\" /><path d=\"M12 4v6\" /><path d=\"M2 18h20\" />","sofa":"<path d=\"M20 9V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v3\" /><path d=\"M2 16a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-5a2 2 0 0 0-4 0v1.5a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5V11a2 2 0 0 0-4 0z\" /><path d=\"M4 18v2\" /><path d=\"M20 18v2\" /><path d=\"M12 4v9\" />","lampada":"<path d=\"M12 12v6\" /><path d=\"M4.077 10.615A1 1 0 0 0 5 12h14a1 1 0 0 0 .923-1.385l-3.077-7.384A2 2 0 0 0 15 2H9a2 2 0 0 0-1.846 1.23Z\" /><path d=\"M8 20a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v1a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1z\" />","porta":"<path d=\"M10 21H2\" /><path d=\"M10 3H7a2 2 0 00-2 2v16\" /><path d=\"M14 12h.01\" /><path d=\"M19 21V5a2 2 0 00-1.675-1.974l-6.163-1.013A1 1 0 0010 3v18a1 1 0 001.124.992z\" /><path d=\"M22 21h-3\" />","casa":"<path d=\"M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8\" /><path d=\"M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z\" />","planta":"<path d=\"M14 9.536V7a4 4 0 0 1 4-4h1.5a.5.5 0 0 1 .5.5V5a4 4 0 0 1-4 4 4 4 0 0 0-4 4c0 2 1 3 1 5a5 5 0 0 1-1 3\" /><path d=\"M4 9a5 5 0 0 1 8 4 5 5 0 0 1-8-4\" /><path d=\"M5 21h14\" />","flor":"<path d=\"M12 5a3 3 0 1 1 3 3m-3-3a3 3 0 1 0-3 3m3-3v1M9 8a3 3 0 1 0 3 3M9 8h1m5 0a3 3 0 1 1-3 3m3-3h-1m-2 3v-1\" /><circle cx=\"12\" cy=\"8\" r=\"2\" /><path d=\"M12 10v12\" /><path d=\"M12 22c4.2 0 7-1.667 7-5-4.2 0-7 1.667-7 5Z\" /><path d=\"M12 22c-4.2 0-7-1.667-7-5 4.2 0 7 1.667 7 5Z\" />","gato":"<path d=\"M12 5c.67 0 1.35.09 2 .26 1.78-2 5.03-2.84 6.42-2.26 1.4.58-.42 7-.42 7 .57 1.07 1 2.24 1 3.44C21 17.9 16.97 21 12 21s-9-3-9-7.56c0-1.25.5-2.4 1-3.44 0 0-1.89-6.42-.5-7 1.39-.58 4.72.23 6.5 2.23A9.04 9.04 0 0 1 12 5Z\" /><path d=\"M8 14v.5\" /><path d=\"M16 14v.5\" /><path d=\"M11.25 16.25h1.5L12 17l-.75-.75Z\" />","cachorro":"<path d=\"M11.25 16.25h1.5L12 17z\" /><path d=\"M16 14v.5\" /><path d=\"M4.42 11.247A13.152 13.152 0 0 0 4 14.556C4 18.728 7.582 21 12 21s8-2.272 8-6.444a11.702 11.702 0 0 0-.493-3.309\" /><path d=\"M8 14v.5\" /><path d=\"M8.5 8.5c-.384 1.05-1.083 2.028-2.344 2.5-1.931.722-3.576-.297-3.656-1-.113-.994 1.177-6.53 4-7 1.923-.321 3.651.845 3.651 2.235A7.497 7.497 0 0 1 14 5.277c0-1.39 1.844-2.598 3.767-2.277 2.823.47 4.113 6.006 4 7-.08.703-1.725 1.722-3.656 1-1.261-.472-1.855-1.45-2.239-2.5\" />","pata":"<circle cx=\"11\" cy=\"4\" r=\"2\" /><circle cx=\"18\" cy=\"8\" r=\"2\" /><circle cx=\"20\" cy=\"16\" r=\"2\" /><path d=\"M9 10a5 5 0 0 1 5 5v3.5a3.5 3.5 0 0 1-6.84 1.045Q6.52 17.48 4.46 16.84A3.5 3.5 0 0 1 5.5 10Z\" />","racao":"<path d=\"M10 15l5.586 -5.585a2 2 0 1 1 3.414 -1.415a2 2 0 1 1 -1.413 3.414l-3.587 3.586\" /><path d=\"M12 13l-3.586 -3.585a2 2 0 1 0 -3.414 -1.415a2 2 0 1 0 1.413 3.414l3.587 3.586\" /><path d=\"M3 20h18c-.175 -1.671 -.046 -3.345 -2 -5h-14c-1.333 1 -2 2.667 -2 5\" />","compras":"<path d=\"m15 11-1 9\" /><path d=\"m19 11-4-7\" /><path d=\"M2 11h20\" /><path d=\"m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6l1.7-7.4\" /><path d=\"M4.5 15.5h15\" /><path d=\"m5 11 4-7\" /><path d=\"m9 11 1 9\" />","pacote":"<path d=\"M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z\" /><path d=\"M12 22V12\" /><polyline points=\"3.29 7 12 12 20.71 7\" /><path d=\"m7.5 4.27 9 5.15\" />","correio":"<path d=\"M22 17a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9.5C2 7 4 5 6.5 5H18c2.2 0 4 1.8 4 4v8Z\" /><polyline points=\"15,9 18,9 18,11\" /><path d=\"M6.5 5C9 5 11 7 11 9.5V17a2 2 0 0 1-2 2\" /><line x1=\"6\" x2=\"7\" y1=\"10\" y2=\"10\" />","carro":"<path d=\"M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2\" /><circle cx=\"7\" cy=\"17\" r=\"2\" /><path d=\"M9 17h6\" /><circle cx=\"17\" cy=\"17\" r=\"2\" />","ferramenta":"<path d=\"M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.106-3.105c.32-.322.863-.22.983.218a6 6 0 0 1-8.259 7.057l-7.91 7.91a1 1 0 0 1-2.999-3l7.91-7.91a6 6 0 0 1 7.057-8.259c.438.12.54.662.219.984z\" />","estrela":"<path d=\"M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z\" />","coracao":"<path d=\"M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5\" />","check":"<path d=\"M20 6 9 17l-5-5\" />","gear":"<path d=\"M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915\" /><circle cx=\"12\" cy=\"12\" r=\"3\" />","report":"<path d=\"M3 3v16a2 2 0 0 0 2 2h16\" /><path d=\"M18 17V9\" /><path d=\"M13 17V5\" /><path d=\"M8 17v-3\" />","left":"<path d=\"m15 18-6-6 6-6\" />","right":"<path d=\"m9 18 6-6-6-6\" />","down":"<path d=\"m6 9 6 6 6-6\" />","x":"<path d=\"M18 6 6 18\" /><path d=\"m6 6 12 12\" />","redo":"<path d=\"M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8\" /><path d=\"M21 3v5h-5\" /><path d=\"M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16\" /><path d=\"M8 16H3v5\" />","up":"<path d=\"m5 12 7-7 7 7\" /><path d=\"M12 19V5\" />","arrowdown":"<path d=\"M12 5v14\" /><path d=\"m19 12-7 7-7-7\" />","share":"<path d=\"M12 2v13\" /><path d=\"m16 6-4-4-4 4\" /><path d=\"M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8\" />","copy":"<rect width=\"14\" height=\"14\" x=\"8\" y=\"8\" rx=\"2\" ry=\"2\" /><path d=\"M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2\" />","download":"<path d=\"M12 15V3\" /><path d=\"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4\" /><path d=\"m7 10 5 5 5-5\" />","upload":"<path d=\"M12 3v12\" /><path d=\"m17 8-5-5-5 5\" /><path d=\"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4\" />","trash":"<path d=\"M10 11v6\" /><path d=\"M14 11v6\" /><path d=\"M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6\" /><path d=\"M3 6h18\" /><path d=\"M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2\" />","plus":"<path d=\"M5 12h14\" /><path d=\"M12 5v14\" />","minus":"<path d=\"M5 12h14\" />","pencil":"<path d=\"M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z\" /><path d=\"m15 5 4 4\" />","flame":"<path d=\"M12 3q1 4 4 6.5t3 5.5a1 1 0 0 1-14 0 5 5 0 0 1 1-3 1 1 0 0 0 5 0c0-2-1.5-3-1.5-5q0-2 2.5-4\" />","clock":"<circle cx=\"12\" cy=\"12\" r=\"10\" /><path d=\"M12 6v6l4 2\" />"};
+const ICON_SVG={"aspirar":"<rect x=\"2\" y=\"11.5\" width=\"13\" height=\"7.5\" rx=\"3.75\"/><path d=\"M15 15.2h1.3a2.7 2.7 0 0 0 2.7-2.7V4\"/><path d=\"M16.2 4H21.5\"/><circle cx=\"5.8\" cy=\"21\" r=\"1\"/><circle cx=\"11.2\" cy=\"21\" r=\"1\"/><path d=\"M6 15.2h3.5\"/>","vassoura":"<path d=\"M13.5 10.5 22 2\" /><path d=\"M14.734 13.841a2 2 0 00-.314-2.42L12.58 9.58a2 2 0 00-2.421-.314l-7.657 4.461A1 1 0 002.3 15.3l6.403 6.403a1 1 0 001.571-.204z\" /><path d=\"m5 18 2-2\" /><path d=\"m7.699 10.7 5.602 5.601\" />","balde":"<path d=\"M4 7a8 4 0 1 0 16 0a8 4 0 1 0 -16 0\" /><path d=\"M4 7c0 .664 .088 1.324 .263 1.965l2.737 10.035c.5 1.5 2.239 2 5 2s4.5 -.5 5 -2c.333 -1 1.246 -4.345 2.737 -10.035a7.45 7.45 0 0 0 .263 -1.965\" />","spray":"<path d=\"M4 12a2 2 0 0 1 2 -2h4a2 2 0 0 1 2 2v7a2 2 0 0 1 -2 2h-4a2 2 0 0 1 -2 -2l0 -7\" /><path d=\"M6 10v-4a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v4\" /><path d=\"M15 7h.01\" /><path d=\"M18 9h.01\" /><path d=\"M18 5h.01\" /><path d=\"M21 3h.01\" /><path d=\"M21 7h.01\" /><path d=\"M21 11h.01\" /><path d=\"M10 7h1\" />","brilho":"<path d=\"M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z\" /><path d=\"M20 2v4\" /><path d=\"M22 4h-4\" /><circle cx=\"4\" cy=\"20\" r=\"2\" />","limpeza":"<path d=\"m16 22-1-4\" /><path d=\"M19 14a1 1 0 0 0 1-1v-1a2 2 0 0 0-2-2h-3a1 1 0 0 1-1-1V4a2 2 0 0 0-4 0v5a1 1 0 0 1-1 1H6a2 2 0 0 0-2 2v1a1 1 0 0 0 1 1\" /><path d=\"M19 14H5l-1.973 6.767A1 1 0 0 0 4 22h16a1 1 0 0 0 .973-1.233z\" /><path d=\"m8 22 1-4\" />","lixo":"<path d=\"M10 11v6\" /><path d=\"M14 11v6\" /><path d=\"M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6\" /><path d=\"M3 6h18\" /><path d=\"M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2\" />","reciclagem":"<path d=\"M7 19H4.815a1.83 1.83 0 0 1-1.57-.881 1.785 1.785 0 0 1-.004-1.784L7.196 9.5\" /><path d=\"M11 19h8.203a1.83 1.83 0 0 0 1.556-.89 1.784 1.784 0 0 0 0-1.775l-1.226-2.12\" /><path d=\"m14 16-3 3 3 3\" /><path d=\"M8.293 13.596 7.196 9.5 3.1 10.598\" /><path d=\"m9.344 5.811 1.093-1.892A1.83 1.83 0 0 1 11.985 3a1.784 1.784 0 0 1 1.546.888l3.943 6.843\" /><path d=\"m13.378 9.633 4.096 1.098 1.097-4.096\" />","janela":"<path d=\"M12 3c-3.866 0 -7 3.272 -7 7v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1 -1v-10c0 -3.728 -3.134 -7 -7 -7\" /><path d=\"M5 13l14 0\" /><path d=\"M12 3l0 18\" />","banho":"<path d=\"M10 4 8 6\" /><path d=\"M17 19v2\" /><path d=\"M2 12h20\" /><path d=\"M7 19v2\" /><path d=\"M9 5 7.621 3.621A2.121 2.121 0 0 0 4 5v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5\" />","chuveiro":"<path d=\"m4 4 2.5 2.5\" /><path d=\"M13.5 6.5a4.95 4.95 0 0 0-7 7\" /><path d=\"M15 5 5 15\" /><path d=\"M14 17v.01\" /><path d=\"M10 16v.01\" /><path d=\"M13 13v.01\" /><path d=\"M16 10v.01\" /><path d=\"M11 20v.01\" /><path d=\"M17 14v.01\" /><path d=\"M20 11v.01\" />","vaso":"<path d=\"M7 12h13a1 1 0 0 1 1 1 5 5 0 0 1-5 5h-.598a.5.5 0 0 0-.424.765l1.544 2.47a.5.5 0 0 1-.424.765H5.402a.5.5 0 0 1-.424-.765L7 18\" /><path d=\"M8 18a5 5 0 0 1-5-5V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8\" />","lavar":"<path d=\"M3.486 8.965c.168 .02 .34 .033 .514 .035c.79 .009 1.539 -.178 2 -.5c.426 -.296 .777 -.5 1.5 -.5h1\" /><path d=\"M16 8l.615 .034c.552 .067 1.046 .23 1.385 .466c.461 .322 1.21 .509 2 .5c.17 0 .339 -.014 .503 -.034\" /><path d=\"M14 10.5l.586 .578a1.516 1.516 0 0 0 2 0c.476 -.433 .55 -1.112 .176 -1.622l-1.762 -2.456c-.37 -.506 -1.331 -1 -2 -1h-3.117a1 1 0 0 0 -.992 .876l-.499 3.986a3.857 3.857 0 0 0 2.608 4.138a2.28 2.28 0 0 0 3 -2.162v-2.338\" /><path d=\"M3 6l1.721 10.329a2 2 0 0 0 1.973 1.671h10.612a2 2 0 0 0 1.973 -1.671l1.721 -10.329\" />","pratos":"<path d=\"M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2\" /><path d=\"M7 2v20\" /><path d=\"M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7\" />","comida":"<path d=\"M4 11h16a1 1 0 0 1 1 1v.5c0 1.5 -2.517 5.573 -4 6.5v1a1 1 0 0 1 -1 1h-8a1 1 0 0 1 -1 -1v-1c-1.687 -1.054 -4 -5 -4 -6.5v-.5a1 1 0 0 1 1 -1\" /><path d=\"M12 4a2.4 2.4 0 0 0 -1 2a2.4 2.4 0 0 0 1 2\" /><path d=\"M16 4a2.4 2.4 0 0 0 -1 2a2.4 2.4 0 0 0 1 2\" /><path d=\"M8 4a2.4 2.4 0 0 0 -1 2a2.4 2.4 0 0 0 1 2\" />","panela":"<path d=\"M2 12h20\" /><path d=\"M20 12v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8\" /><path d=\"m4 8 16-4\" /><path d=\"m8.86 6.78-.45-1.81a2 2 0 0 1 1.45-2.43l1.94-.48a2 2 0 0 1 2.43 1.46l.45 1.8\" />","geladeira":"<path d=\"M5 6a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6Z\" /><path d=\"M5 10h14\" /><path d=\"M15 7v6\" />","microondas":"<rect width=\"20\" height=\"15\" x=\"2\" y=\"4\" rx=\"2\" /><rect width=\"8\" height=\"7\" x=\"6\" y=\"8\" rx=\"1\" /><path d=\"M18 8v7\" /><path d=\"M6 19v2\" /><path d=\"M18 19v2\" />","copo":"<path d=\"m6 8 1.75 12.28a2 2 0 0 0 2 1.72h4.54a2 2 0 0 0 2-1.72L18 8\" /><path d=\"M5 8h14\" /><path d=\"M7 15a6.47 6.47 0 0 1 5 0 6.47 6.47 0 0 0 5 0\" /><path d=\"m12 8 1-6h2\" />","roupa":"<path d=\"M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z\" />","maquina":"<path d=\"M3 6h3\" /><path d=\"M17 6h.01\" /><rect width=\"18\" height=\"20\" x=\"3\" y=\"2\" rx=\"2\" /><circle cx=\"12\" cy=\"13\" r=\"5\" /><path d=\"M12 18a2.5 2.5 0 0 0 0-5 2.5 2.5 0 0 1 0-5\" />","cabide":"<path d=\"M14 6a2 2 0 1 0 -4 0c0 1.667 .67 3 2 4h-.008l7.971 4.428a2 2 0 0 1 1.029 1.749v.823a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-.823a2 2 0 0 1 1.029 -1.749l7.971 -4.428\" />","ferro":"<path d=\"M12 19v2\" /><path d=\"M9 4h7.459a3 3 0 0 1 2.959 2.507l.577 3.464l.81 4.865a1 1 0 0 1 -.985 1.164h-16.82a7 7 0 0 1 7 -7h9.8\" /><path d=\"M8 19l-1 2\" /><path d=\"M16 19l1 2\" />","cama":"<path d=\"M2 20v-8a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v8\" /><path d=\"M4 10V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v4\" /><path d=\"M12 4v6\" /><path d=\"M2 18h20\" />","sofa":"<path d=\"M20 9V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v3\" /><path d=\"M2 16a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-5a2 2 0 0 0-4 0v1.5a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5V11a2 2 0 0 0-4 0z\" /><path d=\"M4 18v2\" /><path d=\"M20 18v2\" /><path d=\"M12 4v9\" />","lampada":"<path d=\"M12 12v6\" /><path d=\"M4.077 10.615A1 1 0 0 0 5 12h14a1 1 0 0 0 .923-1.385l-3.077-7.384A2 2 0 0 0 15 2H9a2 2 0 0 0-1.846 1.23Z\" /><path d=\"M8 20a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v1a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1z\" />","porta":"<path d=\"M10 21H2\" /><path d=\"M10 3H7a2 2 0 00-2 2v16\" /><path d=\"M14 12h.01\" /><path d=\"M19 21V5a2 2 0 00-1.675-1.974l-6.163-1.013A1 1 0 0010 3v18a1 1 0 001.124.992z\" /><path d=\"M22 21h-3\" />","casa":"<path d=\"M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8\" /><path d=\"M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z\" />","planta":"<path d=\"M14 9.536V7a4 4 0 0 1 4-4h1.5a.5.5 0 0 1 .5.5V5a4 4 0 0 1-4 4 4 4 0 0 0-4 4c0 2 1 3 1 5a5 5 0 0 1-1 3\" /><path d=\"M4 9a5 5 0 0 1 8 4 5 5 0 0 1-8-4\" /><path d=\"M5 21h14\" />","flor":"<path d=\"M12 5a3 3 0 1 1 3 3m-3-3a3 3 0 1 0-3 3m3-3v1M9 8a3 3 0 1 0 3 3M9 8h1m5 0a3 3 0 1 1-3 3m3-3h-1m-2 3v-1\" /><circle cx=\"12\" cy=\"8\" r=\"2\" /><path d=\"M12 10v12\" /><path d=\"M12 22c4.2 0 7-1.667 7-5-4.2 0-7 1.667-7 5Z\" /><path d=\"M12 22c-4.2 0-7-1.667-7-5 4.2 0 7 1.667 7 5Z\" />","gato":"<path d=\"M12 5c.67 0 1.35.09 2 .26 1.78-2 5.03-2.84 6.42-2.26 1.4.58-.42 7-.42 7 .57 1.07 1 2.24 1 3.44C21 17.9 16.97 21 12 21s-9-3-9-7.56c0-1.25.5-2.4 1-3.44 0 0-1.89-6.42-.5-7 1.39-.58 4.72.23 6.5 2.23A9.04 9.04 0 0 1 12 5Z\" /><path d=\"M8 14v.5\" /><path d=\"M16 14v.5\" /><path d=\"M11.25 16.25h1.5L12 17l-.75-.75Z\" />","cachorro":"<path d=\"M11.25 16.25h1.5L12 17z\" /><path d=\"M16 14v.5\" /><path d=\"M4.42 11.247A13.152 13.152 0 0 0 4 14.556C4 18.728 7.582 21 12 21s8-2.272 8-6.444a11.702 11.702 0 0 0-.493-3.309\" /><path d=\"M8 14v.5\" /><path d=\"M8.5 8.5c-.384 1.05-1.083 2.028-2.344 2.5-1.931.722-3.576-.297-3.656-1-.113-.994 1.177-6.53 4-7 1.923-.321 3.651.845 3.651 2.235A7.497 7.497 0 0 1 14 5.277c0-1.39 1.844-2.598 3.767-2.277 2.823.47 4.113 6.006 4 7-.08.703-1.725 1.722-3.656 1-1.261-.472-1.855-1.45-2.239-2.5\" />","pata":"<circle cx=\"11\" cy=\"4\" r=\"2\" /><circle cx=\"18\" cy=\"8\" r=\"2\" /><circle cx=\"20\" cy=\"16\" r=\"2\" /><path d=\"M9 10a5 5 0 0 1 5 5v3.5a3.5 3.5 0 0 1-6.84 1.045Q6.52 17.48 4.46 16.84A3.5 3.5 0 0 1 5.5 10Z\" />","racao":"<path d=\"M10 15l5.586 -5.585a2 2 0 1 1 3.414 -1.415a2 2 0 1 1 -1.413 3.414l-3.587 3.586\" /><path d=\"M12 13l-3.586 -3.585a2 2 0 1 0 -3.414 -1.415a2 2 0 1 0 1.413 3.414l3.587 3.586\" /><path d=\"M3 20h18c-.175 -1.671 -.046 -3.345 -2 -5h-14c-1.333 1 -2 2.667 -2 5\" />","compras":"<path d=\"m15 11-1 9\" /><path d=\"m19 11-4-7\" /><path d=\"M2 11h20\" /><path d=\"m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6l1.7-7.4\" /><path d=\"M4.5 15.5h15\" /><path d=\"m5 11 4-7\" /><path d=\"m9 11 1 9\" />","pacote":"<path d=\"M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z\" /><path d=\"M12 22V12\" /><polyline points=\"3.29 7 12 12 20.71 7\" /><path d=\"m7.5 4.27 9 5.15\" />","correio":"<path d=\"M22 17a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9.5C2 7 4 5 6.5 5H18c2.2 0 4 1.8 4 4v8Z\" /><polyline points=\"15,9 18,9 18,11\" /><path d=\"M6.5 5C9 5 11 7 11 9.5V17a2 2 0 0 1-2 2\" /><line x1=\"6\" x2=\"7\" y1=\"10\" y2=\"10\" />","carro":"<path d=\"M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2\" /><circle cx=\"7\" cy=\"17\" r=\"2\" /><path d=\"M9 17h6\" /><circle cx=\"17\" cy=\"17\" r=\"2\" />","ferramenta":"<path d=\"M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.106-3.105c.32-.322.863-.22.983.218a6 6 0 0 1-8.259 7.057l-7.91 7.91a1 1 0 0 1-2.999-3l7.91-7.91a6 6 0 0 1 7.057-8.259c.438.12.54.662.219.984z\" />","estrela":"<path d=\"M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z\" />","coracao":"<path d=\"M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5\" />","check":"<path d=\"M20 6 9 17l-5-5\" />","gear":"<path d=\"M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915\" /><circle cx=\"12\" cy=\"12\" r=\"3\" />","report":"<path d=\"M3 3v16a2 2 0 0 0 2 2h16\" /><path d=\"M18 17V9\" /><path d=\"M13 17V5\" /><path d=\"M8 17v-3\" />","left":"<path d=\"m15 18-6-6 6-6\" />","right":"<path d=\"m9 18 6-6-6-6\" />","down":"<path d=\"m6 9 6 6 6-6\" />","x":"<path d=\"M18 6 6 18\" /><path d=\"m6 6 12 12\" />","redo":"<path d=\"M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8\" /><path d=\"M21 3v5h-5\" /><path d=\"M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16\" /><path d=\"M8 16H3v5\" />","up":"<path d=\"m5 12 7-7 7 7\" /><path d=\"M12 19V5\" />","arrowdown":"<path d=\"M12 5v14\" /><path d=\"m19 12-7 7-7-7\" />","share":"<path d=\"M12 2v13\" /><path d=\"m16 6-4-4-4 4\" /><path d=\"M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8\" />","copy":"<rect width=\"14\" height=\"14\" x=\"8\" y=\"8\" rx=\"2\" ry=\"2\" /><path d=\"M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2\" />","download":"<path d=\"M12 15V3\" /><path d=\"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4\" /><path d=\"m7 10 5 5 5-5\" />","upload":"<path d=\"M12 3v12\" /><path d=\"m17 8-5-5-5 5\" /><path d=\"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4\" />","trash":"<path d=\"M10 11v6\" /><path d=\"M14 11v6\" /><path d=\"M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6\" /><path d=\"M3 6h18\" /><path d=\"M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2\" />","plus":"<path d=\"M5 12h14\" /><path d=\"M12 5v14\" />","minus":"<path d=\"M5 12h14\" />","pencil":"<path d=\"M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z\" /><path d=\"m15 5 4 4\" />","flame":"<path d=\"M12 3q1 4 4 6.5t3 5.5a1 1 0 0 1-14 0 5 5 0 0 1 1-3 1 1 0 0 0 5 0c0-2-1.5-3-1.5-5q0-2 2.5-4\" />","clock":"<circle cx=\"12\" cy=\"12\" r=\"10\" /><path d=\"M12 6v6l4 2\" />","menu":"<path d=\"M4 5h16\" /><path d=\"M4 12h16\" /><path d=\"M4 19h16\" />","calendar":"<path d=\"M8 2v3\" /><path d=\"M16 2v3\" /><rect x=\"3\" y=\"3\" width=\"18\" height=\"18\" rx=\"2\" /><path d=\"M3 9h18\" /><path d=\"M8 13h.01\" /><path d=\"M12 13h.01\" /><path d=\"M16 13h.01\" /><path d=\"M8 17h.01\" /><path d=\"M12 17h.01\" /><path d=\"M16 17h.01\" />","bot":"<path d=\"M12 6V2H8\" /><path d=\"M15 11v2\" /><path d=\"M2 12h2\" /><path d=\"M20 12h2\" /><path d=\"M20 16a2 2 0 0 1-2 2H8.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 4 20.286V8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z\" /><path d=\"M9 11v2\" />","users":"<path d=\"M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2\" /><path d=\"M16 3.128a4 4 0 0 1 0 7.744\" /><path d=\"M22 21v-2a4 4 0 0 0-3-3.87\" /><circle cx=\"9\" cy=\"7\" r=\"4\" />","send":"<path d=\"M3.714 3.048a.498.498 0 0 0-.683.627l2.843 7.627a2 2 0 0 1 0 1.396l-2.842 7.627a.498.498 0 0 0 .682.627l18-8.5a.5.5 0 0 0 0-.904z\" /><path d=\"M6 12h16\" />","listcheck":"<path d=\"M13 5h8\" /><path d=\"M13 12h8\" /><path d=\"M13 19h8\" /><path d=\"m3 17 2 2 4-4\" /><path d=\"m3 7 2 2 4-4\" />","home":"<path d=\"M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8\" /><path d=\"M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z\" />","eye":"<path d=\"M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0\" /><circle cx=\"12\" cy=\"12\" r=\"3\" />","swap":"<path d=\"M8 3 4 7l4 4\" /><path d=\"M4 7h16\" /><path d=\"m16 21 4-4-4-4\" /><path d=\"M20 17H4\" />","user":"<circle cx=\"12\" cy=\"8\" r=\"5\" /><path d=\"M20 21a8 8 0 0 0-16 0\" />"};
 const ICON_PICK=[["aspirar","Aspirador"],["vassoura","Vassoura"],["balde","Balde"],["spray","Spray"],["brilho","Brilho"],["limpeza","Escova"],["lixo","Lixo"],["reciclagem","Reciclagem"],["janela","Janela"],["banho","Banheira"],["chuveiro","Chuveiro"],["vaso","Vaso"],["lavar","Lavar à mão"],["pratos","Talheres"],["comida","Comida"],["panela","Panela"],["geladeira","Geladeira"],["microondas","Micro-ondas"],["copo","Copo"],["roupa","Roupa"],["maquina","Máquina de lavar"],["cabide","Cabide"],["ferro","Ferro de passar"],["cama","Cama"],["sofa","Sofá"],["lampada","Abajur"],["porta","Porta"],["casa","Casa"],["planta","Planta"],["flor","Flor"],["gato","Gato"],["cachorro","Cachorro"],["pata","Pata"],["racao","Ração"],["compras","Compras"],["pacote","Pacote"],["correio","Correio"],["carro","Carro"],["ferramenta","Ferramenta"],["estrela","Estrela"],["coracao","Coração"],["check","Check"]];
-/* Feito em Casa · lógica do app (dados salvos neste aparelho; nuvem e IA do Claude só na pré-visualização) */
+/* Feito em Casa · lógica do app. Dados salvos neste aparelho; o Worker (opcional) dá IA e o painel dos pais. */
 (function(){
 'use strict';
-const VERSION='3.0';
+const VERSION='4.0';
 
 /* ===== 1. utilidades ===== */
 const $=id=>document.getElementById(id);
@@ -425,8 +598,17 @@ const CL=(window.claude&&typeof window.claude.use==='function')?window.claude:nu
 const KEY='feito-em-casa-v3',OLD_KEYS=['feito-em-casa-v2','diario-tarefas-v1'],PKEY='feito-em-casa-prefs';
 const lsGet=k=>{try{return localStorage.getItem(k)}catch(e){return null}};
 const lsSet=(k,v)=>{try{localStorage.setItem(k,v);return true}catch(e){return false}};
-let prefs={aiUrl:''};
-try{const p=JSON.parse(lsGet(PKEY)||'{}');if(p&&typeof p.aiUrl==='string')prefs.aiUrl=p.aiUrl.trim().slice(0,300)}catch(e){}
+let prefs={aiUrl:'',mode:'',share:null,pview:null,exr:false};
+try{const p=JSON.parse(lsGet(PKEY)||'{}');if(p&&typeof p==='object'){
+  if(typeof p.aiUrl==='string')prefs.aiUrl=p.aiUrl.trim().slice(0,300);
+  if(p.mode==='filho'||p.mode==='pais')prefs.mode=p.mode;
+  if(p.share&&/^[a-z0-9]{10,16}$/.test(p.share.code)&&/^[A-Za-z0-9]{20,64}$/.test(p.share.token))prefs.share={code:p.share.code,token:p.share.token};
+  if(p.pview&&/^[a-z0-9]{10,16}$/.test(p.pview.code)&&/^https:\/\//.test(p.pview.w||''))prefs.pview={code:p.pview.code,w:String(p.pview.w).slice(0,300)};
+  prefs.exr=!!p.exr;prefs.z1=!!p.z1;prefs.zeroAt=num(p.zeroAt);
+}}catch(e){}
+const savePrefs=()=>lsSet(PKEY,JSON.stringify(prefs));
+const rnd=(n,abc)=>{const a=new Uint8Array(n);(window.crypto||{}).getRandomValues?crypto.getRandomValues(a):a.forEach((_,i)=>a[i]=Math.random()*256);return [...a].map(x=>abc[x%abc.length]).join('')};
+const workerURL=(base,path)=>{try{return new URL(path,base.replace(/\/+$/,'')+'/').href}catch(e){return ''}};
 
 /* ===== 3. limpeza e migração dos dados ===== */
 const DEF_CFG=()=>({u:0,services:[
@@ -436,7 +618,7 @@ const DEF_CFG=()=>({u:0,services:[
   {id:'s4',name:'Guardar louça',icon:'pratos',vars:[],all:false},
   {id:'s5',name:'Arrumar meu quarto',icon:'cama',vars:[],all:false},
   {id:'s6',name:'Tirar o lixo',icon:'lixo',vars:[],all:false}],
-  routine:[{id:'r1',text:'Limpar a caixinha de areia'}]});
+  routine:[]});
 const GUESS=[[/aspir/,'aspirar'],[/vassour|varr/,'vassoura'],[/pano|esfreg|\bch[ãa]o\b|balde/,'balde'],[/areia|gato|gata/,'gato'],
   [/cachorr|passear|\bdog\b/,'cachorro'],[/guard.*lou|prato|talher/,'pratos'],[/lava.*lou|lou.*lava|\blou[çc]a\b/,'lavar'],
   [/lav.*roupa|m[áa]quina/,'maquina'],[/roupa|passar|dobrar/,'roupa'],[/quarto|cama|len[çc]ol/,'cama'],[/lixo/,'lixo'],
@@ -466,18 +648,22 @@ function cleanCfg(c){
   return {u:num(c.u),services,routine:cleanRoutine(c.routine)};
 }
 function cleanDay(d){
-  const out={log:[],todos:[],rdone:[]};if(!d||typeof d!=='object')return out;
+  const out={log:[],todos:[],rdone:[],plan:[]};if(!d||typeof d!=='object')return out;
   if(Array.isArray(d.log))for(const e of d.log.slice(0,600)){
     if(!e||typeof e!=='object')continue;const n=str(e.n,60);if(!n)continue;
     const base={s:cleanId(e.s),n,v:str(e.v,40),i:hasIcon(e.i)?e.i:guess(n),t:/^\d{2}:\d{2}$/.test(e.t||'')?e.t:''};
     const reps=(typeof e.c==='number'&&e.c>0)?Math.min(Math.floor(e.c),50):1;   // formato antigo: uma linha com contagem
-    for(let k=0;k<reps&&out.log.length<600;k++)out.log.push({s:base.s,n:base.n,v:base.v,i:base.i,t:base.t});
+    for(let k=0;k<reps&&out.log.length<600;k++){const x={s:base.s,n:base.n,v:base.v,i:base.i,t:base.t};if(k===0&&cleanId(e.p))x.p=cleanId(e.p);out.log.push(x)}
   }
   if(Array.isArray(d.todos))for(const t of d.todos.slice(0,100)){
     if(!t||typeof t!=='object')continue;const text=str(t.text,120);if(!text)continue;
     out.todos.push({id:cleanId(t.id)||uid(),text,done:!!t.done});
   }
   if(Array.isArray(d.rdone))for(const r of d.rdone.slice(0,100)){const id=cleanId(r);if(id&&!out.rdone.includes(id))out.rdone.push(id)}
+  if(Array.isArray(d.plan)){const seen=new Set();for(const p of d.plan.slice(0,60)){
+    if(!p||typeof p!=='object')continue;const n=str(p.n,60);if(!n)continue;let id=cleanId(p.id)||uid();while(seen.has(id))id=uid();seen.add(id);
+    out.plan.push({id,s:cleanId(p.s),n,v:str(p.v,40)});
+  }}
   return out;
 }
 function cleanMonth(m){
@@ -485,14 +671,14 @@ function cleanMonth(m){
   const days=m.days&&typeof m.days==='object'?m.days:{};
   for(const k of Object.keys(days)){
     if(!/^\d{2}$/.test(k)||+k<1||+k>31)continue;const d=cleanDay(days[k]);
-    if(d.log.length||d.todos.length||d.rdone.length)out.days[k]=d;
+    if(d.log.length||d.todos.length||d.rdone.length||d.plan.length)out.days[k]=d;
   }
   return out;
 }
 function linkMonth(m,c){   // liga cada registro ao serviço pelo id; se o id não existe mais, tenta pelo nome
   const ids=new Set(c.services.map(s=>s.id)),byName=new Map();
   for(const s of c.services)byName.set(s.name.toLowerCase(),s.id);
-  for(const k of Object.keys(m.days))for(const e of m.days[k].log){
+  for(const k of Object.keys(m.days))for(const e of m.days[k].log.concat(m.days[k].plan||[])){
     if(e.s&&ids.has(e.s))continue;const id=byName.get(e.n.toLowerCase());if(id)e.s=id;
   }
 }
@@ -523,23 +709,36 @@ function loadState(){
   if(!src)for(const k of OLD_KEYS){const r=lsGet(k);if(r){try{src=JSON.parse(r);migrated=true;break}catch(e){}}}
   const st=normalize(src)||{cfg:DEF_CFG(),months:{}};cfg=st.cfg;months=st.months;
   if(migrated&&normalize(src))saveLocal();   // dados de versões antigas passam para o formato novo (os antigos ficam guardados)
+  if(!prefs.exr){   // a rotina "caixinha de areia" era só exemplo: sai uma vez
+    const i=cfg.routine.findIndex(r=>r.id==='r1'&&r.text==='Limpar a caixinha de areia');
+    if(i>=0){cfg.routine.splice(i,1);if(raw)saveLocal()}
+    prefs.exr=true;savePrefs();
+  }
+  if(!prefs.z1){zeroAll(true);prefs.z1=true;savePrefs()}   // começar do zero nesta versão (os serviços e a rotina ficam)
+}
+function zeroAll(quiet){
+  const now=Date.now(),ids=Object.keys(months);months={};
+  for(const id of ids)months[id]={u:now,days:{}};   // meses vazios substituem o que estava na nuvem
+  prefs.zeroAt=now;savePrefs();saveLocal();
+  if(!quiet){for(const id of ids)schedule(id);shareSoon()}
 }
 const countDays=ms=>Object.keys(ms).reduce((a,id)=>a+Object.keys(ms[id].days).length,0);
-const EMPTY_DAY=Object.freeze({log:Object.freeze([]),todos:Object.freeze([]),rdone:Object.freeze([])});
+const EMPTY_DAY=Object.freeze({log:Object.freeze([]),todos:Object.freeze([]),rdone:Object.freeze([]),plan:Object.freeze([])});
 function getDay(k){const m=months[mkey(k)];return(m&&m.days[k.slice(8)])||EMPTY_DAY}
 function ensureDay(k){
   const id=mkey(k);const m=months[id]||(months[id]={u:0,days:{}});const d=k.slice(8);
-  return m.days[d]||(m.days[d]={log:[],todos:[],rdone:[]});
+  const x=m.days[d]||(m.days[d]={log:[],todos:[],rdone:[],plan:[]});if(!x.plan)x.plan=[];return x;
 }
 function saveLocal(){
   const ok=lsSet(KEY,JSON.stringify({v:3,cfg:cfg,months:months}));
   if(!ok)setStatus('Atenção: não consegui salvar neste aparelho (armazenamento cheio ou bloqueado).');
 }
-function commitDay(k){const m=months[mkey(k)];if(m)m.u=Date.now();saveLocal();schedule(mkey(k))}
-function commitCfg(){cfg.u=Date.now();saveLocal();schedule('config')}
+function commitDay(k){const m=months[mkey(k)];if(m)m.u=Date.now();saveLocal();schedule(mkey(k));shareSoon()}
+function commitCfg(){cfg.u=Date.now();saveLocal();schedule('config');shareSoon()}
 function setStatus(t){$('status').textContent=t||''}
-const svcById=id=>cfg.services.find(s=>s.id===id);
-const svcOf=e=>(e.s&&svcById(e.s))||cfg.services.find(s=>s.name.toLowerCase()===e.n.toLowerCase())||null;
+const svcById=(id,c)=>(c||cfg).services.find(s=>s.id===id);
+const svcOf=(e,c)=>(e.s&&svcById(e.s,c))||(c||cfg).services.find(s=>s.name.toLowerCase()===e.n.toLowerCase())||null;
+const planDone=(day,p)=>day.log.some(e=>e.p===p.id);
 
 /* ===== 5. nuvem (só na pré-visualização do Claude) ===== */
 let col=null;const timers={},busy={},loadedM={};
@@ -559,7 +758,7 @@ async function pullMonth(id){
   if(!col||loadedM[id])return;loadedM[id]=true;
   try{
     const s=await col.doc(id).get();const local=months[id];
-    if(s.exists){const m=cleanMonth(s.data());linkMonth(m,cfg);if(!local||m.u>=local.u){months[id]=m;saveLocal()}else push(id)}
+    if(s.exists){const m=cleanMonth(s.data());linkMonth(m,cfg);if(m.u<prefs.zeroAt){months[id]=local||{u:Date.now(),days:{}};push(id)}else if(!local||m.u>=local.u){months[id]=m;saveLocal()}else push(id)}
     else if(local&&Object.keys(local.days).length)push(id);
   }catch(e){loadedM[id]=false}
 }
@@ -567,10 +766,10 @@ async function ensureMonths(keys){if(!col)return;const ids=[...new Set(keys.map(
 const withMonths=(keys,fn)=>col?ensureMonths(keys).then(fn):fn();
 
 /* ===== 6. agrupamento, sequência e textos ===== */
-function groupDay(day){
+function groupDay(day,c){
   const map=new Map();
   for(const e of day.log){
-    const svc=svcOf(e);const key=(svc?svc.id:'n:'+e.n)+'|'+e.v;
+    const svc=svcOf(e,c);const key=(svc?svc.id:'n:'+e.n)+'|'+e.v;
     let g=map.get(key);
     if(!g){g={key:key,svc:svc,s:svc?svc.id:e.s,n:svc?svc.name:e.n,i:svc?svc.icon:e.i,v:e.v,evs:[]};map.set(key,g)}
     g.evs.push(e);
@@ -637,7 +836,7 @@ function reportText(kind,keys){
 
 /* ===== 7. telas: calendário, painel do dia, serviços ===== */
 const now0=new Date();
-let vy=now0.getFullYear(),vm=now0.getMonth(),sel=iso(now0),view='main',sheetId=null;
+let vy=now0.getFullYear(),vm=now0.getMonth(),sel=iso(now0),view='home',sheetId=null,lastMain='home';
 
 function tally(n){   // traços de contagem: quatro riscos e um corte a cada cinco
   n=Math.min(n,10);if(!n)return '';
@@ -663,7 +862,7 @@ function renderCal(){
     const b=el('button','d'+(cnt?' has':'')+(k===today?' today':'')+(k===sel?' sel':''),'<span>'+d+'</span><span class="tk">'+tally(cnt)+'</span>'+(pend?'<span class="pd"></span>':''));
     b.setAttribute('aria-label',d+' de '+MES[vm]+(cnt?', '+plural(cnt,'serviço','serviços'):'')+(pend?', com pendência':''));
     b.setAttribute('aria-pressed',String(k===sel));if(k===today)b.setAttribute('aria-current','date');
-    b.onclick=()=>{sel=k;closeSheet(true);render()};
+    b.onclick=()=>{sel=k;closeSheet(true);if(view==='home'||view==='pais'||view==='edit'||view==='report')showView('day');else render();closeSide()};
     C.append(b);
   }
 }
@@ -683,10 +882,13 @@ function renderDay(){
   $('dNum').textContent=p[2];$('dMon').textContent=MES[+p[1]-1]+' '+p[0];
   $('dWd').textContent=WDL[dt.getDay()]+(isToday?' · hoje':'');
   const x=getDay(sel);
-  const falta=x.todos.filter(t=>!t.done).length+cfg.routine.filter(r=>!x.rdone.includes(r.id)).length;
+  const falta=x.todos.filter(t=>!t.done).length+cfg.routine.filter(r=>!x.rdone.includes(r.id)).length+x.plan.filter(p=>!planDone(x,p)).length;
   $('dTotal').textContent=[x.log.length?plural(x.log.length,'serviço feito','serviços feitos'):'nenhum serviço ainda',falta?plural(falta,'pendência','pendências'):''].filter(Boolean).join(' · ');
-  // a fazer
+  // a fazer: plano do agente, rotina e anotações
   const T=$('todo');T.innerHTML='';
+  const pd=x.plan.filter(p=>planDone(x,p)).length;
+  $('pbar').hidden=!x.plan.length;$('pbar').firstElementChild.style.width=(x.plan.length?Math.round(pd/x.plan.length*100):0)+'%';
+  x.plan.forEach(p=>T.append(planItem(x,p)));
   cfg.routine.forEach(r=>{
     const on=x.rdone.includes(r.id),li=el('li',on?'done':'');
     const c=iconBtn('chk'+(on?' on':''),svg('check'),(on?'Desmarcar: ':'Marcar como feito: ')+r.text,()=>{
@@ -732,7 +934,24 @@ function renderSvcs(){
     G.append(b);
   });
 }
-function render(){renderCal();renderStats();renderDay();renderSvcs()}
+function render(){renderCal();renderStats();renderDay();renderSvcs();if(view==='agent')renderAgent();if(view==='pais')renderPais();barInfo()}
+function planLabel(p){const s=svcOf(p);return (s?s.name:p.n)+(p.v?' · '+p.v:'')}
+function planItem(x,p,inAgent){
+  const on=planDone(x,p),li=el('li',on?'done':''),s=svcOf(p);
+  const c=iconBtn('chk'+(on?' on':''),svg('check'),(on?'Desmarcar: ':'Marcar como feito: ')+planLabel(p),()=>togglePlan(sel,p.id));
+  c.setAttribute('aria-pressed',String(on));
+  li.append(c,el('span','li-t',esc(planLabel(p))),inAgent?iconBtn('del-x',svg('x'),'Tirar do plano: '+planLabel(p),()=>{const d=ensureDay(sel);d.plan=d.plan.filter(q=>q.id!==p.id);commitDay(sel);render()}):el('span','tag plan','plano'));
+  if(!inAgent&&s)li.insertBefore(iconBox(s.icon),li.children[1]);
+  return li;
+}
+function togglePlan(k,pid){
+  if(k>todayKey()){toast('Esse dia ainda não chegou.');return}
+  const d=ensureDay(k),p=d.plan.find(q=>q.id===pid);if(!p)return;
+  const i=d.log.findIndex(e=>e.p===pid);
+  if(i>=0)d.log.splice(i,1);
+  else{const s=svcOf(p);d.log.push({s:s?s.id:p.s,n:s?s.name:p.n,v:p.v,i:s?s.icon:guess(p.n),t:k===todayKey()?hhmm(new Date()):'',p:pid})}
+  commitDay(k);render();
+}
 
 /* folha de opções */
 function openSheet(s){
@@ -771,6 +990,7 @@ function addLog(s,v){
   if(sel>todayKey()){toast('Esse dia ainda não chegou.');return}
   const k=sel,d=ensureDay(k);
   const ev={s:s.id,n:s.name,v:v||'',i:s.icon,t:k===todayKey()?hhmm(new Date()):''};
+  const p=d.plan.find(q=>{const o=svcOf(q);return o&&o.id===s.id&&(q.v===ev.v||!q.v)&&!planDone(d,q)});if(p)ev.p=p.id;
   d.log.push(ev);commitDay(k);render();if(sheetId)renderSheet();
   toast('+1 '+s.name+(v?' · '+v:''),()=>{
     const dd=ensureDay(k),i=dd.log.indexOf(ev);
@@ -794,12 +1014,27 @@ async function shareAndToast(t){
 }
 
 /* ===== 9. telas extras ===== */
+const TITLES={day:'Dia',agent:'Agente',report:'Resumo',edit:'Personalizar',pais:'O que os pais veem'};
+function barInfo(){
+  if(!TITLES[view])return;$('btTitle').textContent=TITLES[view];
+  const d=dateOf(sel);$('btSub').textContent=(view==='day'||view==='agent')?WDL[d.getDay()]+', '+d.getDate()+' de '+MES[d.getMonth()]+(sel===todayKey()?' · hoje':''):'';
+}
 function showView(v){
-  view=v;closeSheet(true);
-  $('vMain').hidden=v!=='main';$('vReport').hidden=v!=='report';$('vEdit').hidden=v!=='edit';
-  if(v==='main')render();else if(v==='report')renderReport();else renderEdit();
+  if(prefs.mode==='pais'&&v!=='pais')v='pais';
+  view=v;closeSheet(true);closeSide();
+  if(v==='home'||v==='day')lastMain=v;
+  for(const [id,k] of [['vHome','home'],['vDay','day'],['vAgent','agent'],['vReport','report'],['vEdit','edit'],['vPais','pais']])$(id).hidden=k!==v;
+  const paisOnly=prefs.mode==='pais';
+  $('barTop').hidden=v==='home'||paisOnly;$('paisTop').hidden=!paisOnly;$('paisSwap').hidden=!paisOnly;
+  document.body.classList.toggle('inapp',v!=='home'&&!paisOnly);document.body.classList.toggle('pais',paisOnly);
+  (v==='home'?$('homeCal'):$('sideCal')).append($('calCard'));
+  document.querySelectorAll('#nav [data-go]').forEach(b=>b.classList.toggle('on',b.dataset.go===v));
+  render();
+  if(v==='report')renderReport();else if(v==='edit')renderEdit();
   window.scrollTo(0,0);
 }
+function openSide(){$('side').classList.add('open');$('sideScrim').classList.add('on');$('wrap').inert=true}
+function closeSide(){if(!$('side').classList.contains('open'))return;$('side').classList.remove('open');$('sideScrim').classList.remove('on');$('wrap').inert=false}
 /* resumo */
 let rpKind='7';
 async function renderReport(){
@@ -827,6 +1062,7 @@ async function renderReport(){
 /* personalizar */
 let openEd=null;
 function renderEdit(){
+  renderShareCard();
   const R=$('rtList');R.innerHTML='';
   cfg.routine.forEach((r,i)=>{
     const li=el('li');li.append(el('span','li-t',esc(r.text)),iconBtn('del-x',svg('x'),'Tirar da rotina: '+r.text,()=>{cfg.routine.splice(i,1);commitCfg();renderEdit()}));R.append(li);
@@ -919,6 +1155,7 @@ async function viaWorker(url,f,signal){
   }finally{clearTimeout(to)}
 }
 async function askAI(force){
+  if(prefs.mode==='pais')return;
   const seq=++aiSeq;aiLast=Date.now();
   const f=facts();setReminder(localReminder(f),false);
   if(aiCtl)aiCtl.abort();aiCtl=new AbortController();const signal=aiCtl.signal;
@@ -964,26 +1201,27 @@ function restoreFrom(text){
 let hiddenAt=0,shownKey=todayKey();
 function toToday(){const t=new Date();vy=t.getFullYear();vm=t.getMonth();sel=iso(t)}
 function greet(){const n=new Date();$('greet').textContent=greetWord(n.getHours())+' · '+WD3[n.getDay()]+', '+n.getDate()+' '+MES3[n.getMonth()]}
-function rollover(){shownKey=todayKey();toToday();closeSheet(true);greet();if(view==='main')render();else if(view==='report')renderReport();askAI(false)}
+function rollover(){shownKey=todayKey();toToday();closeSheet(true);greet();render();if(view==='report')renderReport();askAI(false)}
 function resume(){
   const away=hiddenAt?Date.now()-hiddenAt:0;hiddenAt=0;
   if(todayKey()!==shownKey){rollover();return}
-  if(away>10*60*1000){toToday();closeSheet(true);greet();if(view==='main')render();askAI(false)}
+  if(away>10*60*1000){toToday();closeSheet(true);greet();render();askAI(false)}
+  if(view==='pais')loadPais();
   else if(Date.now()-aiLast>30*60*1000)askAI(false);
 }
 document.addEventListener('visibilitychange',()=>{if(document.hidden)hiddenAt=Date.now();else resume()});
 window.addEventListener('pageshow',e=>{if(e.persisted)resume()});
 setInterval(()=>{if(!document.hidden&&todayKey()!==shownKey)rollover()},30000);
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSheet()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeSheet();closeSide()}});
 
 /* ===== 13. ligações dos botões ===== */
 document.querySelectorAll('[data-ic]').forEach(e=>{e.innerHTML=svg(e.dataset.ic)});
 $('rpShare').innerHTML=svg('share')+'<span>Compartilhar</span>';
 $('rpCopy').innerHTML=svg('copy')+'<span>Copiar texto</span>';
-$('btnReport').onclick=()=>showView('report');
-$('btnEdit').onclick=()=>showView('edit');
-$('rpBack').onclick=()=>showView('main');
-$('edDone').onclick=()=>showView('main');
+$('btnMenu').onclick=openSide;$('btnSide').onclick=openSide;$('sideClose').onclick=closeSide;$('sideScrim').onclick=closeSide;
+$('btnAgent').onclick=()=>showView('agent');$('btnAgent2').onclick=()=>showView('agent');$('openAgent').onclick=()=>showView('agent');
+$('nav').addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b)showView(b.dataset.go)});
+$('swapMode').onclick=()=>{prefs.mode='';if(location.hash)try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}savePrefs();startMode()};$('paisSwap').onclick=$('swapMode').onclick;
 $('aiRe').onclick=()=>askAI(true);
 $('scrim').onclick=()=>closeSheet();
 $('shDone').onclick=()=>closeSheet();
@@ -999,7 +1237,7 @@ async function goMonth(delta){
 }
 $('mPrev').onclick=()=>goMonth(-1);
 $('mNext').onclick=()=>goMonth(1);
-$('goToday').onclick=async()=>{toToday();closeSheet(true);render();await ensureMonths([sel]);render()};
+$('goToday').onclick=async()=>{toToday();closeSheet(true);if(view==='home')showView('day');else render();closeSide();await ensureMonths([sel]);render()};
 $('todoForm').onsubmit=e=>{
   e.preventDefault();const t=str($('todoIn').value,120);if(!t)return;
   ensureDay(sel).todos.push({id:uid(),text:t,done:false});$('todoIn').value='';commitDay(sel);render();
@@ -1044,6 +1282,12 @@ $('bkRestore').onclick=()=>{
     setTimeout(()=>{if(Date.now()-armRestore>=6000)$('bkRestore').textContent='Restaurar'},6100);return}
   armRestore=0;$('bkRestore').textContent='Restaurar';if(restoreFrom(t))$('bkText').value='';
 };
+$('zeroBtn').onclick=()=>{
+  const b=$('zeroBtn');
+  if(!b.dataset.arm){b.dataset.arm='1';b.classList.add('arm');b.textContent='Toque de novo para apagar';setTimeout(()=>{if(b.dataset.arm){delete b.dataset.arm;b.classList.remove('arm');b.textContent='Zerar tudo'}},4000);return}
+  delete b.dataset.arm;b.classList.remove('arm');b.textContent='Zerar tudo';
+  zeroAll(false);chatLog.length=0;toToday();render();$('zeroMsg').textContent='Pronto: todos os dias foram apagados. Serviços e rotina continuam.';
+};
 $('forceUp').onclick=async()=>{
   try{
     if('serviceWorker' in navigator){const rs=await navigator.serviceWorker.getRegistrations();await Promise.all(rs.map(r=>r.unregister()))}
@@ -1055,10 +1299,249 @@ document.querySelectorAll('[data-sa]').forEach(e=>{e.hidden=!!CL});
 const installed=(window.navigator&&window.navigator.standalone)||(window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches);
 if(installed)$('instCard').querySelector('ol').hidden=true;
 
+
+/* ===== 13b. agente: plano do dia + perguntas ===== */
+const chatLog=[];let picking=null,chatBusy=false;
+const norm=t=>String(t).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+function dayStatus(k){
+  const x=getDay(k);
+  return {x,planF:x.plan.filter(p=>!planDone(x,p)).map(planLabel),planD:x.plan.filter(p=>planDone(x,p)).map(planLabel),
+    rot:cfg.routine.filter(r=>!x.rdone.includes(r.id)).map(r=>r.text),notas:x.todos.filter(t=>!t.done).map(t=>t.text),
+    feitos:groupDay(x).map(g=>g.n+(g.v?' ('+g.v+')':'')+(g.evs.length>1?' '+g.evs.length+'x':'')),total:x.log.length};
+}
+const dayWord=k=>k===todayKey()?'hoje':'em '+fmtDM(k);
+const bullets=a=>'• '+a.join('\n• ');
+function findSvc(n){
+  let best=null,score=0;
+  for(const s of cfg.services){
+    const words=norm(s.name).split(/\s+/).filter(w=>w.length>2&&!['meu','minha','dos','das','com'].includes(w));
+    const sc=words.filter(w=>n.includes(w.slice(0,Math.max(4,w.length-2)))).length/(words.length||1);
+    if(sc>score){score=sc;best=s}
+  }
+  if(!best||score<.5)return null;
+  const v=best.vars.find(x=>n.includes(norm(x)))||(best.all&&/casa toda/.test(n)?'Casa toda':'');
+  return {s:best,v};
+}
+function addToPlan(k,s,v){
+  const d=ensureDay(k);if(d.plan.some(p=>p.s===s.id&&p.v===v))return false;
+  d.plan.push({id:'p'+uid(),s:s.id,n:s.name,v:v||''});commitDay(k);return true;
+}
+function localAnswer(q){
+  const n=norm(q),st=dayStatus(sel),dw=dayWord(sel),hit=findSvc(n);
+  const lbl=hit?hit.s.name+(hit.v?' · '+hit.v:''):'';
+  if(/mont|organiz|planej|escolher/.test(n)){openPicker();return 'Beleza! Toque nos serviços que você precisa fazer '+dw+' e depois em “Salvar plano”.'}
+  if(hit&&/adicion|coloc|inclu|bota|\bpoe\b|preciso|tenho que|vou |acrescent/.test(n)){
+    return addToPlan(sel,hit.s,hit.v)?'Coloquei “'+lbl+'” no plano '+(sel===todayKey()?'de hoje':'de '+fmtDM(sel))+'.':'“'+lbl+'” já está no plano.';
+  }
+  if(hit&&/\b(fiz|terminei|acabei|conclui|marca|marque|pronto|lavei|aspirei|guardei|arrumei|tirei|limpei|passei|varri)\b/.test(n)){
+    if(sel>todayKey())return 'Esse dia ainda não chegou, então não dá para marcar como feito.';
+    const d=ensureDay(sel),p=d.plan.find(q=>{const o=svcOf(q);return o&&o.id===hit.s.id&&(!hit.v||q.v===hit.v)&&!planDone(d,q)});
+    if(p){togglePlan(sel,p.id);const r=dayStatus(sel);return 'Marquei “'+planLabel(p)+'” como feito. '+(r.planF.length?'Faltam '+r.planF.length+' do plano.':'Plano completo! 🎉')}
+    addLog(hit.s,hit.v);return 'Registrei “'+lbl+'” como feito '+dw+'.';
+  }
+  const all=st.planF.concat(st.rot,st.notas);
+  if(/falt|rest|pendent|ainda|sobr|tenho que fazer|preciso fazer/.test(n)){
+    if(/quant/.test(n)){
+      if(!st.x.plan.length&&!all.length)return 'Nada pendente '+dw+'. Monte o plano em “Escolher serviços”.';
+      return (st.x.plan.length?'Do plano, você fez '+st.planD.length+' de '+st.x.plan.length+'. Faltam '+st.planF.length+'.':'Faltam '+all.length+' itens.')+(st.rot.length+st.notas.length&&st.x.plan.length?' Fora do plano, ainda tem '+plural(st.rot.length+st.notas.length,'item','itens')+'.':'');
+    }
+    if(!all.length)return st.x.plan.length?'Nada! Você concluiu tudo do plano '+dw+'. 🎉':'Não tem nada pendente '+dw+'. Quer montar um plano? Toque em “Montar meu dia”.';
+    return 'Ainda falta '+dw+':\n'+bullets(all);
+  }
+  if(/quant/.test(n))return plural(st.total,'serviço registrado','serviços registrados')+' '+dw+(st.x.plan.length?'. Plano: '+st.planD.length+' de '+st.x.plan.length+' feitos.':'.');
+  if(/\b(fiz|feito|fez|conclu|realizei|fiquei)/.test(n)||/o que (eu )?ja/.test(n))
+    return st.feitos.length?'Você fez '+dw+':\n'+bullets(st.feitos):'Ainda não tem nada registrado '+dw+'.';
+  if(/^(oi|ola|e ai|bom dia|boa tarde|boa noite)\b/.test(n))return 'Oi! Me pergunte “o que falta?”, “o que eu já fiz?” ou diga “terminei de lavar a louça”.';
+  return null;
+}
+function agentFacts(){
+  const st=dayStatus(sel),d=dateOf(sel);
+  return {dia:WDL[d.getDay()]+' '+fmtDM(sel)+(sel===todayKey()?' (hoje)':''),hora:new Date().getHours(),plano_falta:st.planF.slice(0,20),plano_feito:st.planD.slice(0,20),
+    rotina_falta:st.rot.slice(0,12),anotacoes:st.notas.slice(0,12),feitos:st.feitos.slice(0,20),servicos:cfg.services.map(s=>s.name).slice(0,40)};
+}
+async function aiAnswer(q){
+  const f=agentFacts();
+  if(samp){
+    const r=await samp('Você é o agente do app "Feito em Casa", que ajuda um jovem a organizar e registrar as tarefas de casa. Dados do dia (JSON): '+JSON.stringify(f)+'\nPergunta: '+q+'\nResponda em português do Brasil, curto (até 3 frases), usando só os dados. Sem markdown.',{modelTier:'quick'});
+    return String(r&&r.text||'').trim();
+  }
+  if(!CL&&/^https:\/\//i.test(prefs.aiUrl)){
+    const ctl=new AbortController(),to=setTimeout(()=>ctl.abort(),15000);
+    try{
+      const r=await fetch(workerURL(prefs.aiUrl,'chat'),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pergunta:q,fatos:f}),signal:ctl.signal});
+      const j=await r.json().catch(()=>null);if(!r.ok||!j||!j.text)throw new Error(j&&j.error||'erro');return String(j.text).trim().slice(0,800);
+    }finally{clearTimeout(to)}
+  }
+  return '';
+}
+function say(me,t){chatLog.push({me,t});if(chatLog.length>60)chatLog.shift();renderChat()}
+function renderChat(){
+  const C=$('chat');C.innerHTML='';
+  for(const m of chatLog){const b=el('div','msg-b '+(m.me?'me':m.wait?'bot wait':'bot'));b.textContent=m.t;C.append(b)}
+  C.scrollTop=C.scrollHeight;
+}
+async function ask(q){
+  q=str(q,200);if(!q||chatBusy)return;say(true,q);
+  const a=localAnswer(q);render();
+  if(a){say(false,a);return}
+  chatBusy=true;const w={me:false,t:'Pensando…',wait:true};chatLog.push(w);renderChat();
+  let t='';try{t=await aiAnswer(q)}catch(e){t=''}
+  chatBusy=false;w.wait=false;
+  w.t=t||'Ainda não sei responder isso. Pergunte “o que falta?”, “o que eu já fiz?”, “quanto falta?” ou diga “terminei de aspirar a sala”.';
+  renderChat();
+}
+function pkKey(sid,v){return sid+'|'+v}
+function openPicker(){
+  const x=getDay(sel);picking=new Set(x.plan.map(p=>pkKey(svcOf(p)?svcOf(p).id:p.s,p.v)));renderAgent();
+  setTimeout(()=>{try{$('agPick').scrollIntoView({block:'nearest',behavior:'smooth'})}catch(e){}},50);
+}
+function renderPicker(){
+  const L=$('agPickList');L.innerHTML='';
+  const chip=(label,key)=>{const b=el('button','opt',esc(label));b.type='button';b.setAttribute('aria-pressed',String(picking.has(key)));
+    b.onclick=()=>{picking.has(key)?picking.delete(key):picking.add(key);b.setAttribute('aria-pressed',String(picking.has(key)))};return b};
+  const simple=cfg.services.filter(s=>!s.vars.length&&!s.all);
+  if(simple.length){const box=el('div','pk'),o=el('div','opts');o.style.paddingLeft='0';simple.forEach(s=>o.append(chip(s.name,pkKey(s.id,''))));box.append(o);L.append(box)}
+  cfg.services.filter(s=>s.vars.length||s.all).forEach(s=>{
+    const box=el('div','pk'),h=el('div','pk-h');h.append(iconBox(s.icon),document.createTextNode(s.name));
+    const o=el('div','opts');if(s.all)o.append(chip('Casa toda',pkKey(s.id,'Casa toda')));s.vars.forEach(v=>o.append(chip(v,pkKey(s.id,v))));
+    box.append(h,o);L.append(box);
+  });
+  if(!cfg.services.length)L.append(el('p','empty','Crie serviços em Personalizar primeiro.'));
+}
+function savePicker(){
+  const d=ensureDay(sel),keep=[],added=[];
+  for(const p of d.plan){const o=svcOf(p),k=pkKey(o?o.id:p.s,p.v);if(picking.has(k)){keep.push(p);picking.delete(k)}else d.log.forEach(e=>{if(e.p===p.id)delete e.p})}
+  for(const k of picking){const [sid,v]=k.split('|');const s=svcById(sid);if(s){const p={id:'p'+uid(),s:s.id,n:s.name,v:v||''};keep.push(p);added.push(p)}}
+  d.plan=keep;picking=null;
+  // o que já foi registrado hoje conta para o plano novo
+  for(const p of added){const e=d.log.find(e=>!e.p&&e.s===p.s&&(!p.v||e.v===p.v));if(e)e.p=p.id}
+  commitDay(sel);render();
+  const st=dayStatus(sel);
+  say(false,d.plan.length?'Plano salvo: '+plural(d.plan.length,'serviço','serviços')+(st.planD.length?' ('+st.planD.length+' já feito'+(st.planD.length>1?'s':'')+')':'')+'. Vá marcando conforme terminar e me pergunte “o que falta?”.':'Plano vazio. Quando quiser, escolha os serviços de novo.');
+}
+function renderAgent(){
+  const x=getDay(sel);$('agPlanTitle').textContent='Plano '+(sel===todayKey()?'de hoje':'de '+fmtDM(sel));
+  const L=$('agPlan');L.innerHTML='';x.plan.forEach(p=>L.append(planItem(x,p,true)));
+  const pd=x.plan.filter(p=>planDone(x,p)).length;
+  $('agBar').hidden=!x.plan.length;$('agBar').firstElementChild.style.width=(x.plan.length?Math.round(pd/x.plan.length*100):0)+'%';
+  $('agEmpty').hidden=x.plan.length>0||!!picking;
+  $('agPick').hidden=!picking;$('agEdit').hidden=!!picking;if(picking)renderPicker();
+  if(!chatLog.length)chatLog.push({me:false,t:'Oi! Eu organizo seu dia. Toque em “Escolher serviços” para montar o plano, vá marcando o que terminar e depois me pergunte “o que falta?”.'});
+  renderChat();
+}
+
+/* ===== 13c. painel dos pais ===== */
+let paisData=null,paisErr='',paisTimer=null;
+const dayIn=(ms,k)=>{const m=ms[mkey(k)];return(m&&m.days[k.slice(8)])||EMPTY_DAY};
+function snapshot(){
+  const ms={},t=new Date();
+  for(let i=0;i<3;i++){const d=new Date(t.getFullYear(),t.getMonth()-i,1),id='m-'+d.getFullYear()+'-'+pad(d.getMonth()+1);if(months[id])ms[id]=months[id]}
+  return {v:1,at:Date.now(),cfg:{services:cfg.services,routine:cfg.routine},months:ms};
+}
+function renderPais(){
+  const remote=prefs.mode==='pais'&&prefs.pview,B=$('paisBody');B.innerHTML='';
+  let src=remote?paisData:{cfg,months,at:Date.now()};
+  if(prefs.mode==='pais'&&!prefs.pview){
+    const f=el('form','card');f.innerHTML='<h3 class="h3">Ver no seu celular</h3><p class="empty">Peça ao seu filho o link do painel (ele cria em Personalizar) e abra o link aqui, ou cole abaixo.</p>';
+    const r=el('div','row'),i=el('input');i.type='url';i.placeholder='Cole o link aqui';i.setAttribute('aria-label','Link do painel');
+    const b=el('button','btn','Abrir');b.type='submit';r.append(i,b);f.append(r);
+    f.onsubmit=e=>{e.preventDefault();try{const u=new URL(i.value.trim());const h=new URLSearchParams(u.hash.slice(1));const c=h.get('pais'),w=h.get('w')||'';
+      if(/^[a-z0-9]{10,16}$/.test(c)&&/^https:\/\//.test(w)){prefs.pview={code:c,w};savePrefs();loadPais();return}}catch(err){}toast('Esse link não parece o do painel.')};
+    B.append(f);
+    if(!Object.keys(months).length){$('paisStatus').textContent='';return}
+  }
+  if(!src){B.append(el('p','empty box',paisErr||'Carregando…'));$('paisStatus').textContent='';return}
+  const c=cleanCfg(src.cfg),ms={};for(const id of Object.keys(src.months||{}))if(/^m-\d{4}-\d{2}$/.test(id))ms[id]=cleanMonth(src.months[id]);
+  const k=todayKey(),x=dayIn(ms,k),gs=groupDay(x,c);
+  const pl=p=>p.n+(p.v?' · '+p.v:''),pf=x.plan.filter(p=>!planDone(x,p)),pd=x.plan.length-pf.length;
+  const rot=c.routine.filter(r=>!x.rdone.includes(r.id));
+  // hoje
+  const h=el('section','card pcard');
+  h.append(el('span','lbl','Hoje · '+WDL[new Date().getDay()].toLowerCase()+', '+fmtDM(k)),el('div','pbig','<b>'+x.log.length+'</b><span>'+(x.log.length===1?'serviço feito':'serviços feitos')+'</span>'));
+  if(x.plan.length){h.append(el('div','pbar','<i style="width:'+Math.round(pd/x.plan.length*100)+'%"></i>'),el('p','empty',pd+' de '+x.plan.length+' tarefas planejadas para hoje'))}
+  if(gs.length){const ul=el('ul','list');gs.forEach(g=>{const li=el('li');const ts=g.evs.map(e=>e.t).filter(Boolean);
+    li.append(iconBox(g.i),el('span','li-t',esc(g.n)+((g.v||ts.length)?'<small>'+esc([g.v,timesText(ts)].filter(Boolean).join(' · '))+'</small>':'')),el('span','x','×'+g.evs.length));ul.append(li)});h.append(ul)}
+  else h.append(el('p','empty box','Nada registrado ainda hoje.'));
+  const falta=pf.map(pl).concat(rot.map(r=>r.text));
+  if(falta.length)h.append(el('span','lbl','Ainda falta'),el('p','empty',esc(falta.join(' · '))));
+  B.append(h);
+  // semana
+  const w=el('section','card pcard'),wk=el('div','week');let max=1;const days=[];
+  for(let i=6;i>=0;i--){const d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()-i);const kk=iso(d),n=dayIn(ms,kk).log.length;max=Math.max(max,n);days.push([d,n])}
+  days.forEach(([d,n])=>wk.append(el('div','','<em>'+(n||'')+'</em><i class="'+(n?'':'zero')+'" style="height:'+Math.max(3,Math.round(n/max*80))+'px"></i><span>'+WD3[d.getDay()]+'</span>')));
+  let sq=0;{const d=new Date();d.setHours(12,0,0,0);if(!dayIn(ms,iso(d)).log.length)d.setDate(d.getDate()-1);for(let i=0;i<400&&dayIn(ms,iso(d)).log.length;i++){sq++;d.setDate(d.getDate()-1)}}
+  const mm=ms[mkey(k)];let mt=0,md=0;if(mm)for(const dd of Object.values(mm.days)){mt+=dd.log.length;if(dd.log.length)md++}
+  w.append(el('span','lbl','Últimos 7 dias'),wk,el('div','stats n','<div><b>'+days.reduce((a,d)=>a+d[1],0)+'</b><span class="lbl">na semana</span></div><div><b>'+mt+'</b><span class="lbl">no mês</span></div><div><b>'+sq+'</b><span class="lbl">dias seguidos</span></div>'));
+  B.append(w);
+  // mais feitos no mês
+  const by=new Map();if(mm)for(const dd of Object.values(mm.days))for(const g of groupDay(dd,c)){const r=by.get(g.n)||{n:g.n,i:g.i,c:0};r.c+=g.evs.length;by.set(g.n,r)}
+  const rows=[...by.values()].sort((a,b)=>b.c-a.c).slice(0,6);
+  if(rows.length){const t=el('section','card pcard');t.append(el('span','lbl','Mais feitos em '+MES[new Date().getMonth()]+' ('+plural(md,'dia','dias')+' com tarefa)'));const R=el('div','rows');
+    rows.forEach(r=>{const row=el('div','rrow'),top=el('div','rtop');top.append(iconBox(r.i),el('span','rname',esc(r.n)),el('span','rcount',r.c+'x'));row.append(top,el('div','bar','<i style="width:'+Math.max(4,Math.round(r.c/rows[0].c*100))+'%"></i>'));R.append(row)});t.append(R);B.append(t)}
+  const at=new Date(src.at||Date.now());
+  $('paisStatus').textContent=remote?'Atualizado pelo celular do filho às '+hhmm(at)+(iso(at)!==k?' de '+fmtDM(iso(at)):'')+(paisErr?' · '+paisErr:''):(prefs.mode==='pais'?'Mostrando os dados deste aparelho.':'É isso que seus pais veem (só resultados, sem editar).');
+  $('paisSub').textContent='Painel dos pais';
+}
+async function loadPais(){
+  clearInterval(paisTimer);
+  if(!(prefs.mode==='pais'&&prefs.pview)){renderPais();return}
+  try{
+    const r=await fetch(workerURL(prefs.pview.w,'ver')+'?c='+prefs.pview.code,{cache:'no-store'});
+    const j=await r.json().catch(()=>null);
+    if(!r.ok||!j||!j.data)throw new Error(j&&j.error||'Erro '+r.status);
+    paisData=j.data;paisErr='';
+  }catch(e){paisErr=paisData?'sem conexão agora':'Não consegui carregar: '+(e&&e.message||'sem conexão')}
+  renderPais();
+  paisTimer=setInterval(()=>{if(!document.hidden&&view==='pais')loadPais()},60000);
+}
+/* compartilhamento (lado do filho) */
+let shareT=null;
+function shareSoon(){if(!prefs.share||!/^https:\/\//.test(prefs.aiUrl)||CL)return;clearTimeout(shareT);shareT=setTimeout(pushShare,3000)}
+async function pushShare(extra){
+  const r=await fetch(workerURL(prefs.aiUrl,'sync'),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.assign({code:prefs.share.code,token:prefs.share.token,data:snapshot()},extra||{}))});
+  const j=await r.json().catch(()=>null);if(!r.ok)throw new Error(j&&j.error||'Erro '+r.status);return j;
+}
+const paisLink=()=>prefs.share?location.origin+location.pathname+'#pais='+prefs.share.code+'&w='+encodeURIComponent(prefs.aiUrl):'';
+function renderShareCard(){
+  const on=!!prefs.share;$('shOn').hidden=on;$('shSend').hidden=!on;$('shOff').hidden=!on;$('shLink').hidden=!on;$('shLink').value=paisLink();
+}
+$('shOn').onclick=async()=>{
+  const m=$('shMsg');
+  if(!/^https:\/\//.test(prefs.aiUrl)){m.textContent='Primeiro salve o endereço do Worker no cartão de baixo.';return}
+  prefs.share={code:rnd(12,'abcdefghijkmnpqrstuvwxyz23456789'),token:rnd(32,'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789')};
+  m.textContent='Criando…';
+  try{await pushShare();savePrefs();renderShareCard();m.textContent='Pronto! Mande o link para seus pais. Eles veem só os resultados, e tudo atualiza sozinho.'}
+  catch(e){prefs.share=null;m.textContent='Não deu certo: '+(e&&e.message||'sem resposta')+'. Confira o Worker (ele precisa do KV “DADOS”, veja o LEIA-ME).'}
+};
+$('shSend').onclick=()=>shareAndToast('Painel do Feito em Casa: aqui vocês veem as tarefas que eu faço em casa, atualizado na hora.\n'+paisLink());
+$('shOff').onclick=async()=>{
+  const b=$('shOff');if(!b.dataset.arm){b.dataset.arm='1';b.textContent='Toque de novo';setTimeout(()=>{delete b.dataset.arm;b.textContent='Desligar'},4000);return}
+  try{await pushShare({apagar:true})}catch(e){}
+  prefs.share=null;savePrefs();renderShareCard();$('shMsg').textContent='Link desligado. O link antigo parou de funcionar.';
+};
+$('paisRe').onclick=()=>loadPais();
+
+/* ===== 13d. agente: ligações ===== */
+$('askForm').onsubmit=e=>{e.preventDefault();const q=$('askIn').value;$('askIn').value='';ask(q)};
+$('qchips').addEventListener('click',e=>{const b=e.target.closest('[data-q]');if(b)ask(b.dataset.q)});
+$('agEdit').onclick=openPicker;$('agPickOk').onclick=savePicker;$('agPickNo').onclick=()=>{picking=null;renderAgent()};
+
+/* ===== 13e. perfil ===== */
+function startMode(){
+  const h=new URLSearchParams(location.hash.slice(1)),c=h.get('pais'),w=h.get('w')||'';
+  if(c&&/^[a-z0-9]{10,16}$/.test(c)&&/^https:\/\//.test(w)){prefs.pview={code:c,w:w.slice(0,300)};prefs.mode='pais';savePrefs()}
+  const pick=!prefs.mode;$('vMode').hidden=!pick;$('shell').hidden=pick;
+  document.body.classList.remove('inapp','pais');
+  if(pick)return;
+  if(prefs.mode==='pais'){showView('pais');loadPais()}else showView('home');
+}
+$('pickFilho').onclick=()=>{prefs.mode='filho';savePrefs();startMode();askAI(false)};
+$('pickPais').onclick=()=>{prefs.mode='pais';savePrefs();startMode()};
+
 /* ===== 14. início ===== */
 loadState();
 greet();
-render();
+startMode();
 setReminder(localReminder(facts()),false);
 (async function startPlatform(){
   if(!CL){askAI(false);return}
@@ -1069,7 +1552,7 @@ setReminder(localReminder(facts()),false);
     if(db&&id){
       col=db.collection('data/users/'+id);setStatus('Sincronizando…');
       const tm=setTimeout(()=>setStatus('A nuvem está demorando. Usando os dados deste aparelho.'),10000);
-      try{await pullCfg();await pullMonth(mkey(todayKey()));clearTimeout(tm);setStatus('Salvo na sua conta.');if(view==='main')render();askAI(false)}
+      try{await pullCfg();await pullMonth(mkey(todayKey()));clearTimeout(tm);setStatus('Salvo na sua conta.');render();askAI(false)}
       catch(e){clearTimeout(tm);setStatus('Sem conexão com a nuvem. Salvo neste aparelho.')}
     }else setStatus('Salvo só neste aparelho.');
   }catch(e){setStatus('Salvo só neste aparelho.')}

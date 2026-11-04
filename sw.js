@@ -1,5 +1,5 @@
 /* Feito em Casa · cache offline. O nome do cache muda sempre que algum arquivo muda. */
-const CACHE='fec-c5b5ec8683';
+const CACHE='fec-232e57d523';
 const CORE=["./", "./index.html", "./manifest.webmanifest", "./favicon.svg", "./icon-192.png", "./icon-512.png", "./icon-maskable-512.png", "./apple-touch-icon.png", "./plus-jakarta-sans-latin-wght-normal.woff2"];
 self.addEventListener('install',e=>{
   e.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE.map(u=>new Request(u,{cache:'reload'})))).then(()=>self.skipWaiting()));
