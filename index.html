@@ -1383,7 +1383,7 @@ function addToPlan(k,s,v){
 function localAction(q){
   const n=norm(q),st=dayStatus(sel),dw=dayWord(sel),hit=findSvc(n);
   const lbl=hit?hit.s.name+(hit.v?' · '+hit.v:''):'';
-  if(/mont|organiz|planej|escolher/.test(n)){openPicker();return 'Beleza! Toque nos serviços que você precisa fazer '+dw+' e depois em “Salvar plano”.'}
+  if(/^(montar|monte|planejar|organizar) (o |meu )?(dia|plano)|escolher (os )?servicos/.test(n)&&!/dica|como|\?/.test(n)){openPicker();return 'Beleza! Toque nos serviços que você precisa fazer '+dw+' e depois em “Salvar plano”.'}
   if(hit&&/adicion|coloc|inclu|bota|\bpoe\b|preciso|tenho que|vou |acrescent/.test(n)){
     return addToPlan(sel,hit.s,hit.v)?'Coloquei “'+lbl+'” no plano '+(sel===todayKey()?'de hoje':'de '+fmtDM(sel))+'.':'“'+lbl+'” já está no plano.';
   }
