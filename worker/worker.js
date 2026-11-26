@@ -192,6 +192,17 @@ export default {
     if (request.method === 'OPTIONS') {
       return okOrigin ? new Response(null, { status: 204, headers: corsHeaders(origin) }) : new Response(null, { status: 403 });
     }
+    if (!origin && request.method === 'GET') {
+      // alguém abriu o endereço direto no navegador: explica em vez de mostrar erro
+      return new Response(
+        '<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">' +
+        '<title>Feito em Casa · Worker</title><body style="font-family:system-ui,sans-serif;max-width:32rem;margin:3rem auto;padding:0 1rem;line-height:1.5">' +
+        '<h1 style="font-size:1.4rem">✅ O Worker do Feito em Casa está funcionando</h1>' +
+        '<p>Este endereço não é para abrir no navegador. Copie o endereço desta página e cole no app em ' +
+        '<b>☰ → Personalizar → Worker (IA e painel dos pais)</b>, depois toque em <b>Salvar</b> e <b>Testar</b>.</p></body>',
+        { status: 200, headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' } }
+      );
+    }
     if (!okOrigin) return reply({ error: 'Origem não permitida. Confira ALLOWED_ORIGIN.' }, 403, null);
 
     const url = new URL(request.url);
