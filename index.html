@@ -570,7 +570,7 @@ body::before{position:absolute;bottom:auto;height:560px}
         <p class="msg" id="shMsg" role="status"></p>
       </section>
 
-      <section class="card" data-sa id="aiCfg">
+      <section class="card" id="aiCfg" hidden>
         <div><h3 class="h3">Worker (IA e painel dos pais)</h3><p class="empty" style="margin-top:4px">Já vem configurado, não precisa mexer. Toque em Testar se quiser conferir se a IA está respondendo.</p></div>
         <div class="row"><input type="url" id="aiUrl" placeholder="https://…workers.dev" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Endereço do Worker"></div>
         <div class="row"><button class="btn sm" id="aiSave">Salvar</button><button class="btn soft sm" id="aiTest">Testar</button></div>
@@ -652,7 +652,7 @@ const lsSet=(k,v)=>{try{localStorage.setItem(k,v);return true}catch(e){return fa
 const DEFAULT_WORKER='https://feito-em-casa-ia.pancreascolunacolunar.workers.dev';
 let prefs={aiUrl:DEFAULT_WORKER,mode:'',share:null,pview:null,exr:false};
 try{const p=JSON.parse(lsGet(PKEY)||'{}');if(p&&typeof p==='object'){
-  if(typeof p.aiUrl==='string'&&/^https:\/\//i.test(p.aiUrl.trim()))prefs.aiUrl=p.aiUrl.trim().slice(0,300);
+  prefs.aiUrl=DEFAULT_WORKER;   // sempre o Worker do app (fica invisível para quem usa)
   if(p.mode==='filho'||p.mode==='pais')prefs.mode=p.mode;
   if(p.share&&/^[a-z0-9]{10,16}$/.test(p.share.code)&&/^[A-Za-z0-9]{20,64}$/.test(p.share.token))prefs.share={code:p.share.code,token:p.share.token};
   if(p.pview&&/^[a-z0-9]{10,16}$/.test(p.pview.code)&&/^https:\/\//.test(p.pview.w||''))prefs.pview={code:p.pview.code,w:String(p.pview.w).slice(0,300)};
@@ -1566,11 +1566,11 @@ function renderShareCard(){
 }
 $('shOn').onclick=async()=>{
   const m=$('shMsg');
-  if(!/^https:\/\//.test(prefs.aiUrl)){m.textContent='Primeiro salve o endereço do Worker no cartão de baixo.';return}
+  if(!/^https:\/\//.test(prefs.aiUrl)){m.textContent='Não deu para criar o link agora. Tente de novo.';return}
   prefs.share={code:rnd(12,'abcdefghijkmnpqrstuvwxyz23456789'),token:rnd(32,'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789')};
   m.textContent='Criando…';
   try{await pushShare();savePrefs();renderShareCard();m.textContent='Pronto! Mande o link para seus pais. Eles veem só os resultados, e tudo atualiza sozinho.'}
-  catch(e){prefs.share=null;m.textContent='Não deu certo: '+(e&&e.message||'sem resposta')+'. Confira o Worker (ele precisa do KV “DADOS”, veja o LEIA-ME).'}
+  catch(e){prefs.share=null;m.textContent=(navigator.onLine===false?'Sem internet agora. Conecte e toque de novo em Criar link dos pais.':'Não deu certo agora ('+(e&&e.message||'sem resposta')+'). Tente de novo em instantes.')}
 };
 $('shSend').onclick=()=>shareAndToast('Painel do Feito em Casa: aqui vocês veem as tarefas que eu faço em casa, atualizado na hora.\n'+paisLink());
 $('shOff').onclick=async()=>{
