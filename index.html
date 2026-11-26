@@ -342,7 +342,7 @@ body::before{position:absolute;bottom:auto;height:560px}
 @keyframes spBar{from{transform:translateX(-100%)}to{transform:translateX(250%)}}
 @keyframes spFail{to{opacity:0;visibility:hidden;pointer-events:none}}
 @media (prefers-reduced-motion:reduce){.splash *{animation:none!important}}
-.pagenda .pmtitle b{font-size:1.4rem;font-weight:800;letter-spacing:-.03em;text-transform:capitalize;margin-right:6px}.pagenda .pmtitle span{color:var(--muted);font-weight:700;font-size:.8rem}.pagenda .sq:disabled{opacity:.3}.pagenda .d.fut{opacity:.35}.pagenda .pleg{display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap}.pagenda .pleg .t2{display:inline-flex;gap:2px}.pagenda .pleg .t2 i{display:block;width:2px;height:9px;border-radius:1px;background:var(--accent)}.pagenda .pleg .pd2{width:6px;height:6px;border-radius:50%;background:var(--signal);display:inline-block;margin-left:8px}.pagenda .calfoot{justify-content:space-between}.pagenda .d.plan{box-shadow:inset 0 0 0 2px var(--a16)}
+.pagenda .pmtitle b{font-size:1.4rem;font-weight:800;letter-spacing:-.03em;text-transform:capitalize;margin-right:6px}.pagenda .pmtitle span{color:var(--muted);font-weight:700;font-size:.8rem}.pagenda .sq:disabled{opacity:.3}.pagenda .d.fut{opacity:.35}.pagenda .pleg{display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap}.pagenda .pleg .t2{display:inline-flex;gap:2px}.pagenda .pleg .t2 i{display:block;width:2px;height:9px;border-radius:1px;background:var(--accent)}.pagenda .pleg .pd2{width:6px;height:6px;border-radius:50%;background:var(--signal);display:inline-block;margin-left:8px}.pagenda .calfoot{justify-content:space-between}.pagenda .d.plan{box-shadow:inset 0 0 0 2px var(--a16)}.padd{align-self:flex-start}.paddf{display:flex;flex-direction:column;gap:10px}.paddf select{font:inherit;font-size:16px;padding:13px 16px;border:0;border-radius:16px;background:var(--sunk);color:var(--fg);width:100%;appearance:none;-webkit-appearance:none;padding-right:44px;background-image:url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2714%27 height=%2714%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%23888%27 stroke-width=%273%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3E%3Cpath d=%27m6 9 6 6 6-6%27/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center}
 </style>
 </head>
 <body>
@@ -710,12 +710,12 @@ function cleanDay(d){
   }
   if(Array.isArray(d.todos))for(const t of d.todos.slice(0,100)){
     if(!t||typeof t!=='object')continue;const text=str(t.text,120);if(!text)continue;
-    out.todos.push({id:cleanId(t.id)||uid(),text,done:!!t.done});
+    out.todos.push(Object.assign({id:cleanId(t.id)||uid(),text,done:!!t.done},t.by==='pais'?{by:'pais'}:{}));
   }
   if(Array.isArray(d.rdone))for(const r of d.rdone.slice(0,100)){const id=cleanId(r);if(id&&!out.rdone.includes(id))out.rdone.push(id)}
   if(Array.isArray(d.plan)){const seen=new Set();for(const p of d.plan.slice(0,60)){
     if(!p||typeof p!=='object')continue;const n=str(p.n,60);if(!n)continue;let id=cleanId(p.id)||uid();while(seen.has(id))id=uid();seen.add(id);
-    out.plan.push({id,s:cleanId(p.s),n,v:str(p.v,40)});
+    out.plan.push(Object.assign({id,s:cleanId(p.s),n,v:str(p.v,40)},p.by==='pais'?{by:'pais'}:{}));
   }}
   return out;
 }
@@ -956,7 +956,7 @@ function renderDay(){
     c.setAttribute('aria-pressed',String(t.done));
     const del=iconBtn('del-x',svg('x'),'Apagar anotação: '+t.text,()=>{
       const d=ensureDay(sel);d.todos=d.todos.filter(q=>q.id!==t.id);commitDay(sel);render()});
-    li.append(c,el('span','li-t',esc(t.text)),del);T.append(li);
+    li.append(c,el('span','li-t',esc(t.text)));if(t.by==='pais')li.append(el('span','tag plan','dos pais'));li.append(del);T.append(li);
   });
   // feito
   const L=$('log');L.innerHTML='';$('logEmpty').hidden=x.log.length>0;$('share').hidden=!x.log.length;
@@ -995,7 +995,7 @@ function planItem(x,p,inAgent){
   const on=planDone(x,p),li=el('li',on?'done':''),s=svcOf(p);
   const c=iconBtn('chk'+(on?' on':''),svg('check'),(on?'Desmarcar: ':'Marcar como feito: ')+planLabel(p),()=>togglePlan(sel,p.id));
   c.setAttribute('aria-pressed',String(on));
-  li.append(c,el('span','li-t',esc(planLabel(p))),inAgent?iconBtn('del-x',svg('x'),'Tirar do plano: '+planLabel(p),()=>{const d=ensureDay(sel);d.plan=d.plan.filter(q=>q.id!==p.id);commitDay(sel);render()}):el('span','tag plan','plano'));
+  li.append(c,el('span','li-t',esc(planLabel(p))),inAgent?iconBtn('del-x',svg('x'),'Tirar do plano: '+planLabel(p),()=>{const d=ensureDay(sel);d.plan=d.plan.filter(q=>q.id!==p.id);commitDay(sel);render()}):el('span','tag plan',p.by==='pais'?'dos pais':'plano'));
   if(!inAgent&&s)li.insertBefore(iconBox(s.icon),li.children[1]);
   return li;
 }
@@ -1498,7 +1498,7 @@ function snapshot(){
   {const d=new Date(t.getFullYear(),t.getMonth()-11,1),lo='m-'+d.getFullYear()+'-'+pad(d.getMonth()+1);for(const id of Object.keys(months))if(id>=lo)ms[id]=months[id]}
   return {v:1,at:Date.now(),cfg:{services:cfg.services,routine:cfg.routine},months:ms};
 }
-let paisVy=null,paisVm=null,paisSel=null;
+let paisVy=null,paisVm=null,paisSel=null,paisPed=[],paisAddOpen=false;
 function renderPais(){
   const remote=prefs.mode==='pais'&&prefs.pview,B=$('paisBody');B.innerHTML='';
   let src=remote?paisData:{cfg,months,at:Date.now()};
@@ -1539,7 +1539,7 @@ function renderPais(){
     b.setAttribute('aria-label',d+' de '+MES[paisVm]+(cnt?', '+plural(cnt,'serviço','serviços'):', nada feito')+(pend?', com tarefa planejada não feita':''));
     b.setAttribute('aria-pressed',String(k===paisSel));if(k===today)b.setAttribute('aria-current','date');
     if(fut&&!x.plan.length)b.disabled=true;
-    b.onclick=()=>{paisSel=k;renderPais();const t=$('pDia');if(t)t.scrollIntoView({behavior:'smooth',block:'start'})};
+    b.onclick=()=>{paisSel=k;paisAddOpen=false;renderPais();const t=$('pDia');if(t)t.scrollIntoView({behavior:'smooth',block:'start'})};
     C.append(b);
   }
   ag.append(C);
@@ -1558,8 +1558,48 @@ function renderPais(){
   if(gs.length){const ul=el('ul','list');gs.forEach(g=>{const li=el('li');const ts=g.evs.map(e=>e.t).filter(Boolean);
     li.append(iconBox(g.i),el('span','li-t',esc(g.n)+((g.v||ts.length)?'<small>'+esc([g.v,timesText(ts)].filter(Boolean).join(' · '))+'</small>':'')),el('span','x','×'+g.evs.length));ul.append(li)});h.append(ul)}
   else if(!isF)h.append(el('p','empty box',isT?'Nada registrado ainda hoje.':'Nada registrado neste dia.'));
-  if(pf.length)h.append(el('span','lbl',isF?'Planejado para este dia':isT?'Ainda falta do plano':'Planejado e não feito'),el('p','empty',esc(pf.map(pl).join(' · '))));
+  const pfOwn=pf.filter(p=>p.by!=='pais');
+if(pfOwn.length)h.append(el('span','lbl',isF?'Planejado para este dia':isT?'Ainda falta do plano':'Planejado e não feito'),el('p','empty',esc(pfOwn.map(pl).join(' · '))));
   if(isT){const rot=c.routine.filter(r=>!x.rdone.includes(r.id)).map(r=>r.text);if(rot.length)h.append(el('span','lbl','Rotina ainda não marcada'),el('p','empty',esc(rot.join(' · '))))}
+  // pedidos dos pais neste dia (já no app do filho ou ainda a caminho)
+  const ped=(remote?paisPed:[]).filter(q=>q&&q.dia===k);
+  const meus=x.plan.filter(p=>p.by==='pais').map(p=>({t:pl(p),st:planDone(x,p)?'feito':'a fazer'}))
+    .concat(x.todos.filter(t=>t.by==='pais').map(t=>({t:t.text,st:t.done?'feito':'a fazer'})))
+    .concat(ped.map(q=>({t:q.s?q.n+(q.v?' · '+q.v:''):q.texto,st:'enviado'})));
+  if(meus.length){
+    h.append(el('span','lbl','Pedidos de vocês'));const ul=el('ul','list');
+    meus.forEach(m=>{const li=el('li',m.st==='feito'?'done':'');li.append(el('span','li-t',esc(m.t)),el('span','tag'+(m.st==='a fazer'?' plan':''),m.st));ul.append(li)});
+    h.append(ul);
+    if(ped.length)h.append(el('p','empty','“Enviado” chega no celular do filho quando ele abrir o app.'));
+  }
+  if(remote&&k>=today){
+    const add=el('button','btn soft sm padd','+ Adicionar tarefa');add.type='button';add.hidden=paisAddOpen;
+    const f=el('form','paddf');f.hidden=!paisAddOpen;
+    const s1=el('select');s1.setAttribute('aria-label','Serviço');
+    c.services.forEach(sv=>{const o=el('option');o.value=sv.id;o.textContent=sv.name;s1.append(o)});
+    {const o=el('option');o.value='__txt';o.textContent='Outra coisa (escrever)';s1.append(o)}
+    const s2=el('select');s2.setAttribute('aria-label','Cômodo ou opção');
+    const tx=el('input');tx.type='text';tx.maxLength=120;tx.placeholder='Ex: Regar as plantas';tx.setAttribute('aria-label','Tarefa');
+    const fill=()=>{const sv=c.services.find(z=>z.id===s1.value);s2.innerHTML='';
+      if(sv){const vs=[''].concat(sv.vars,sv.all?['Casa toda']:[]);vs.forEach(v=>{const o=el('option');o.value=v;o.textContent=v||'Sem cômodo';s2.append(o)})}
+      s2.hidden=!sv||s2.options.length<2;tx.hidden=!!sv};
+    s1.onchange=fill;fill();
+    const row=el('div','row'),ok=el('button','btn sm','Enviar'),no=el('button','btn soft sm','Cancelar');ok.type='submit';no.type='button';
+    no.onclick=()=>{paisAddOpen=false;renderPais()};row.append(ok,no);
+    f.append(el('span','lbl','Nova tarefa para '+fmtDM(k)),s1,s2,tx,row);
+    add.onclick=()=>{paisAddOpen=true;add.hidden=true;f.hidden=false};
+    f.onsubmit=async e=>{
+      e.preventDefault();const sv=c.services.find(z=>z.id===s1.value),body={code:prefs.pview.code,dia:k};
+      if(sv){body.s=sv.id;body.n=sv.name;body.v=s2.hidden?'':s2.value}else{body.texto=tx.value.trim();if(!body.texto){tx.focus();return}}
+      ok.disabled=true;ok.textContent='Enviando…';
+      try{
+        const r=await fetch(workerURL(prefs.pview.w,'pedir'),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+        const j=await r.json().catch(()=>null);if(!r.ok||!j||!j.pedido)throw new Error(j&&j.error||'Erro '+r.status);
+        paisPed.push(j.pedido);paisAddOpen=false;renderPais();toast('Enviado! Aparece no celular do filho quando ele abrir o app.');
+      }catch(err){ok.disabled=false;ok.textContent='Enviar';toast(navigator.onLine===false?'Sem internet agora.':'Não deu para enviar: '+(err&&err.message||'tente de novo'))}
+    };
+    h.append(add,f);
+  }
   B.append(h);
 
   // ---- resumo do mês mostrado ----
@@ -1584,10 +1624,10 @@ async function loadPais(){
     const r=await fetch(workerURL(prefs.pview.w,'ver')+'?c='+prefs.pview.code,{cache:'no-store'});
     const j=await r.json().catch(()=>null);
     if(!r.ok||!j||!j.data)throw new Error(j&&j.error||'Erro '+r.status);
-    paisData=j.data;paisErr='';
+    paisData=j.data;paisPed=Array.isArray(j.pedidos)?j.pedidos:[];paisErr='';
   }catch(e){paisErr=paisData?'sem conexão agora':'Não consegui carregar: '+(e&&e.message||'sem conexão')}
   renderPais();
-  paisTimer=setInterval(()=>{if(!document.hidden&&view==='pais')loadPais()},60000);
+  paisTimer=setInterval(()=>{if(!document.hidden&&view==='pais'&&!paisAddOpen)loadPais()},60000);
 }
 /* compartilhamento (lado do filho) */
 let shareT=null;
@@ -1596,6 +1636,28 @@ async function pushShare(extra){
   const r=await fetch(workerURL(prefs.aiUrl,'sync'),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.assign({code:prefs.share.code,token:prefs.share.token,data:snapshot()},extra||{}))});
   const j=await r.json().catch(()=>null);if(!r.ok)throw new Error(j&&j.error||'Erro '+r.status);return j;
 }
+let pullBusy=false;
+async function pullPedidos(){   // tarefas que os pais adicionaram pelo painel entram no "A fazer" do dia
+  if(pullBusy||!prefs.share||prefs.mode!=='filho'||CL||!/^https:\/\//.test(prefs.aiUrl))return;
+  pullBusy=true;
+  try{
+    const body={code:prefs.share.code,token:prefs.share.token};
+    const r=await fetch(workerURL(prefs.aiUrl,'pedidos'),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body),cache:'no-store'});
+    const j=await r.json().catch(()=>null);if(!r.ok||!j||!Array.isArray(j.pedidos)||!j.pedidos.length)return;
+    const ids=[],dias=new Set();let novos=0;
+    for(const q of j.pedidos){
+      const id=cleanId(q&&q.id);if(!id||!/^\d{4}-\d{2}-\d{2}$/.test(q.dia||''))continue;ids.push(q.id);
+      const d=ensureDay(q.dia);
+      if(q.s&&q.n){if(!d.plan.some(x=>x.id===id)){const sv=svcById(cleanId(q.s));d.plan.push({id,s:sv?sv.id:cleanId(q.s),n:sv?sv.name:str(q.n,60),v:str(q.v,40),by:'pais'});novos++;dias.add(q.dia)}}
+      else if(q.texto){if(!d.todos.some(x=>x.id===id)){d.todos.push({id,text:str(q.texto,120),done:false,by:'pais'});novos++;dias.add(q.dia)}}
+    }
+    for(const k of dias)commitDay(k);
+    if(novos){render();toast(novos===1?'Seus pais adicionaram 1 tarefa.':'Seus pais adicionaram '+novos+' tarefas.')}
+    if(ids.length)await fetch(workerURL(prefs.aiUrl,'pedidos-ok'),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.assign({ids},body))});
+  }catch(e){}finally{pullBusy=false}
+}
+setInterval(()=>{if(!document.hidden)pullPedidos()},60000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)pullPedidos()});
 const paisLink=()=>prefs.share?location.origin+location.pathname+'#pais='+prefs.share.code+'&w='+encodeURIComponent(prefs.aiUrl):'';
 function renderShareCard(){
   const on=!!prefs.share;$('shOn').hidden=on;$('shSend').hidden=!on;$('shOff').hidden=!on;$('shLink').hidden=!on;$('shLink').value=paisLink();
@@ -1637,6 +1699,7 @@ $('pickPais').onclick=()=>{prefs.mode='pais';savePrefs();startMode()};
 loadState();
 greet();
 startMode();
+pullPedidos();
 {const sp=$('splash');if(sp)setTimeout(()=>{sp.classList.add('out');setTimeout(()=>sp.remove(),450)},Math.max(0,1100-performance.now()))}
 setReminder(localReminder(facts()),false);
 (async function startPlatform(){

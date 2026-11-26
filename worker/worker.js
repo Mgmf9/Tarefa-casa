@@ -6,7 +6,10 @@
  *   POST /          lembrete com IA (o app manda um resumo do dia)
  *   POST /chat      agente com IA (pergunta + dados do dia)
  *   POST /sync      o celular do filho envia os resultados para o painel dos pais
- *   GET  /ver?c=…   o celular dos pais lê os resultados (só leitura)
+ *   GET  /ver?c=…   o celular dos pais lê os resultados (e os pedidos que ainda não chegaram)
+ *   POST /pedir     os pais adicionam uma tarefa para um dia (fica numa fila)
+ *   POST /pedidos   o celular do filho busca a fila (precisa do token)
+ *   POST /pedidos-ok o celular do filho avisa o que já entrou no app (sai da fila)
  *
  * Configure em Settings → Variables and Secrets:
  *   GROQ_API_KEY    (Secret)  sua chave da Groq
@@ -161,6 +164,7 @@ async function sync(env, body) {
   if (old && old.h !== h) throw fail('Esse link pertence a outro aparelho.', 403);
   if (body.apagar === true) {
     if (old) await env.DADOS.delete(key);
+    await env.DADOS.delete('q:' + code);
     return { ok: true, apagado: true };
   }
   const data = body.data;
@@ -176,7 +180,61 @@ async function ver(env, url) {
   if (!CODE_RE.test(code)) throw fail('Link do painel inválido.', 400);
   const rec = await env.DADOS.get('p:' + code, 'json');
   if (!rec || !rec.data) throw fail('Este link foi desligado ou ainda não recebeu dados.', 404);
-  return { data: rec.data, at: rec.at }; // o token nunca sai daqui
+  const fila = (await env.DADOS.get('q:' + code, 'json')) || [];
+  return { data: rec.data, at: rec.at, pedidos: fila }; // o token nunca sai daqui
+}
+
+/* ---------- Pedidos dos pais (tarefas que eles adicionam) ---------- */
+
+const DIA_RE = /^\d{4}-\d{2}-\d{2}$/;
+const ID_RE = /^[\w-]{1,24}$/;
+const MAX_FILA = 100;
+
+// os pais (com o link) mandam uma tarefa para um dia
+async function pedir(env, body) {
+  needKV(env);
+  const code = String(body.code || '');
+  if (!CODE_RE.test(code)) throw fail('Link do painel inválido.', 400);
+  const rec = await env.DADOS.get('p:' + code, 'json');
+  if (!rec) throw fail('Este link foi desligado.', 404);
+  const dia = String(body.dia || '');
+  if (!DIA_RE.test(dia)) throw fail('Dia inválido.', 400);
+  const s = ID_RE.test(String(body.s || '')) ? String(body.s) : '';
+  const n = clip(body.n, 60), v = clip(body.v, 40), texto = clip(body.texto, 120);
+  if (!(s && n) && !texto) throw fail('Escolha um serviço ou escreva a tarefa.', 400);
+  const fila = (await env.DADOS.get('q:' + code, 'json')) || [];
+  if (fila.length >= MAX_FILA) throw fail('Muitos pedidos esperando. Peça para o filho abrir o app.', 429);
+  const id = 'q' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+  const item = s && n ? { id, dia, s, n, v, at: Date.now() } : { id, dia, texto, at: Date.now() };
+  fila.push(item);
+  await env.DADOS.put('q:' + code, JSON.stringify(fila), { expirationTtl: 60 * 60 * 24 * 120 });
+  return { ok: true, pedido: item };
+}
+
+async function donoDoLink(env, body) {
+  needKV(env);
+  const code = String(body.code || ''), token = String(body.token || '');
+  if (!CODE_RE.test(code) || !TOKEN_RE.test(token)) throw fail('Código do painel inválido.', 400);
+  const rec = await env.DADOS.get('p:' + code, 'json');
+  if (!rec) throw fail('Este link foi desligado.', 404);
+  if (rec.h !== (await sha256(token))) throw fail('Esse link pertence a outro aparelho.', 403);
+  return code;
+}
+
+// o celular do filho busca os pedidos
+async function pedidos(env, body) {
+  const code = await donoDoLink(env, body);
+  return { pedidos: (await env.DADOS.get('q:' + code, 'json')) || [] };
+}
+
+// o celular do filho avisa quais pedidos já entraram no app
+async function pedidosOk(env, body) {
+  const code = await donoDoLink(env, body);
+  const ids = new Set(Array.isArray(body.ids) ? body.ids.map(String).slice(0, MAX_FILA) : []);
+  const fila = ((await env.DADOS.get('q:' + code, 'json')) || []).filter(p => !ids.has(p.id));
+  if (fila.length) await env.DADOS.put('q:' + code, JSON.stringify(fila), { expirationTtl: 60 * 60 * 24 * 120 });
+  else await env.DADOS.delete('q:' + code);
+  return { ok: true, restantes: fila.length };
 }
 
 /* ---------- roteamento ---------- */
@@ -219,6 +277,9 @@ export default {
       if (request.method !== 'POST') return reply({ error: 'Use POST.' }, 405, origin);
 
       if (path === '/sync') return reply(await sync(env, await readJSON(request, MAX_SYNC_BODY)), 200, origin);
+      if (path === '/pedir') return reply(await pedir(env, await readJSON(request, 4000)), 200, origin);
+      if (path === '/pedidos') return reply(await pedidos(env, await readJSON(request, 4000)), 200, origin);
+      if (path === '/pedidos-ok') return reply(await pedidosOk(env, await readJSON(request, 8000)), 200, origin);
       if (path === '/chat') {
         const body = await readJSON(request, MAX_AI_BODY);
         if (!clip(body.pergunta, 300)) return reply({ error: 'Pergunta vazia.' }, 400, origin);
