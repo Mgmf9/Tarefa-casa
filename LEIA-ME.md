@@ -71,7 +71,8 @@ Trocar o código **não** apaga as variáveis que você já tinha configurado.
 2. Quando aparecer "Pronto!", toque em **Enviar link** e mande pelo WhatsApp.
 3. Seus pais abrem o link no celular deles. O app abre direto no painel, só para ver: o que foi feito hoje e a que horas, o plano do dia, os últimos 7 dias e o que mais foi feito no mês. Atualiza sozinho a cada minuto (e no botão de atualizar).
 4. Cada vez que você registra algo, o app envia os resultados para o painel em poucos segundos (precisa de internet nessa hora).
-5. Para cortar o acesso: **Desligar** (toque duas vezes). O link antigo para de funcionar. Se quiser, crie um novo depois.
+5. **Os pais podem adicionar tarefas:** no painel, eles tocam em hoje ou num dia futuro e em **+ Adicionar tarefa**, escolhem o serviço e o cômodo (ou escrevem outra coisa) e tocam em **Enviar**. A tarefa aparece no **A fazer** daquele dia no celular do filho, marcada como **dos pais**, assim que ele abrir o app (ou em até 1 minuto, se o app já estiver aberto). No painel, cada pedido mostra se está **enviado**, **a fazer** ou **feito**.
+6. Para cortar o acesso: **Desligar** (toque duas vezes). O link antigo para de funcionar. Se quiser, crie um novo depois.
 
 Em **☰ → O que os pais veem** você confere como fica a tela deles.
 
