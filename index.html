@@ -1380,7 +1380,7 @@ function addToPlan(k,s,v){
   const d=ensureDay(k);if(d.plan.some(p=>p.s===s.id&&p.v===v))return false;
   d.plan.push({id:'p'+uid(),s:s.id,n:s.name,v:v||''});commitDay(k);return true;
 }
-function localAnswer(q){
+function localAction(q){
   const n=norm(q),st=dayStatus(sel),dw=dayWord(sel),hit=findSvc(n);
   const lbl=hit?hit.s.name+(hit.v?' · '+hit.v:''):'';
   if(/mont|organiz|planej|escolher/.test(n)){openPicker();return 'Beleza! Toque nos serviços que você precisa fazer '+dw+' e depois em “Salvar plano”.'}
@@ -1393,6 +1393,10 @@ function localAnswer(q){
     if(p){togglePlan(sel,p.id);const r=dayStatus(sel);return 'Marquei “'+planLabel(p)+'” como feito. '+(r.planF.length?'Faltam '+r.planF.length+' do plano.':'Plano completo! 🎉')}
     addLog(hit.s,hit.v);return 'Registrei “'+lbl+'” como feito '+dw+'.';
   }
+  return null;
+}
+function localInfo(q){
+  const n=norm(q),st=dayStatus(sel),dw=dayWord(sel);
   const all=st.planF.concat(st.rot,st.notas);
   if(/falt|rest|pendent|ainda|sobr|tenho que fazer|preciso fazer/.test(n)){
     if(/quant/.test(n)){
@@ -1436,10 +1440,11 @@ function renderChat(){
 }
 async function ask(q){
   q=str(q,200);if(!q||chatBusy)return;say(true,q);
-  const a=localAnswer(q);render();
+  const a=localAction(q);render();   // comandos que mudam dados (marcar feito, pôr no plano) são feitos aqui mesmo
   if(a){say(false,a);return}
   chatBusy=true;const w={me:false,t:'Pensando…',wait:true};chatLog.push(w);renderChat();
-  let t='';try{t=await aiAnswer(q)}catch(e){t=''}
+  let t='';try{t=await aiAnswer(q)}catch(e){t=''}   // perguntas vão para a IA (Groq pelo Worker)
+  if(!t)t=localInfo(q)||'';                          // sem internet ou IA fora do ar: resposta simples do aparelho
   chatBusy=false;w.wait=false;
   w.t=t||'Ainda não sei responder isso. Pergunte “o que falta?”, “o que eu já fiz?”, “quanto falta?” ou diga “terminei de aspirar a sala”.';
   renderChat();
