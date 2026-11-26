@@ -342,7 +342,7 @@ body::before{position:absolute;bottom:auto;height:560px}
 @keyframes spBar{from{transform:translateX(-100%)}to{transform:translateX(250%)}}
 @keyframes spFail{to{opacity:0;visibility:hidden;pointer-events:none}}
 @media (prefers-reduced-motion:reduce){.splash *{animation:none!important}}
-.pagenda .pmtitle b{font-size:1.4rem;font-weight:800;letter-spacing:-.03em;text-transform:capitalize;margin-right:6px}.pagenda .pmtitle span{color:var(--muted);font-weight:700;font-size:.8rem}.pagenda .sq:disabled{opacity:.3}.pagenda .d.fut{opacity:.35}.pagenda .pleg{display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap}.pagenda .pleg .t2{display:inline-flex;gap:2px}.pagenda .pleg .t2 i{display:block;width:2px;height:9px;border-radius:1px;background:var(--accent)}.pagenda .pleg .pd2{width:6px;height:6px;border-radius:50%;background:var(--signal);display:inline-block;margin-left:8px}.pagenda .calfoot{justify-content:space-between}
+.pagenda .pmtitle b{font-size:1.4rem;font-weight:800;letter-spacing:-.03em;text-transform:capitalize;margin-right:6px}.pagenda .pmtitle span{color:var(--muted);font-weight:700;font-size:.8rem}.pagenda .sq:disabled{opacity:.3}.pagenda .d.fut{opacity:.35}.pagenda .pleg{display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap}.pagenda .pleg .t2{display:inline-flex;gap:2px}.pagenda .pleg .t2 i{display:block;width:2px;height:9px;border-radius:1px;background:var(--accent)}.pagenda .pleg .pd2{width:6px;height:6px;border-radius:50%;background:var(--signal);display:inline-block;margin-left:8px}.pagenda .calfoot{justify-content:space-between}.pagenda .d.plan{box-shadow:inset 0 0 0 2px var(--a16)}
 </style>
 </head>
 <body>
@@ -1495,7 +1495,7 @@ let paisData=null,paisErr='',paisTimer=null;
 const dayIn=(ms,k)=>{const m=ms[mkey(k)];return(m&&m.days[k.slice(8)])||EMPTY_DAY};
 function snapshot(){
   const ms={},t=new Date();
-  for(let i=0;i<3;i++){const d=new Date(t.getFullYear(),t.getMonth()-i,1),id='m-'+d.getFullYear()+'-'+pad(d.getMonth()+1);if(months[id])ms[id]=months[id]}
+  {const d=new Date(t.getFullYear(),t.getMonth()-11,1),lo='m-'+d.getFullYear()+'-'+pad(d.getMonth()+1);for(const id of Object.keys(months))if(id>=lo)ms[id]=months[id]}
   return {v:1,at:Date.now(),cfg:{services:cfg.services,routine:cfg.routine},months:ms};
 }
 let paisVy=null,paisVm=null,paisSel=null;
@@ -1518,15 +1518,15 @@ function renderPais(){
   if(paisVy===null){paisVy=now.getFullYear();paisVm=now.getMonth()}
   // meses que dá para ver: do mais antigo com dados até o mês atual
   const ids=Object.keys(ms).sort(),cur=now.getFullYear()*12+now.getMonth();
-  const minM=ids.length?Math.min(cur,(+ids[0].slice(2,6))*12+(+ids[0].slice(7,9))-1):cur;
-  const vmI=Math.max(minM,Math.min(cur,paisVy*12+paisVm));paisVy=Math.floor(vmI/12);paisVm=vmI%12;
+  const minM=Math.min(cur-24,ids.length?(+ids[0].slice(2,6))*12+(+ids[0].slice(7,9))-1:cur),maxM=cur+12;
+  const vmI=Math.max(minM,Math.min(maxM,paisVy*12+paisVm));paisVy=Math.floor(vmI/12);paisVm=vmI%12;
 
   // ---- agenda do mês ----
   const ag=el('section','card calcard pagenda');ag.setAttribute('aria-label','Agenda');
   const hd=el('div','mhead'),tt=el('div','pmtitle','<b>'+MES[paisVm]+'</b><span>'+paisVy+'</span>'),nav=el('div','row');
   const go=d=>()=>{const n=paisVy*12+paisVm+d;paisVy=Math.floor(n/12);paisVm=n%12;renderPais()};
   const pv=el('button','sq',svg('left'));pv.setAttribute('aria-label','Mês anterior');pv.disabled=vmI<=minM;pv.onclick=go(-1);
-  const nx=el('button','sq',svg('right'));nx.setAttribute('aria-label','Próximo mês');nx.disabled=vmI>=cur;nx.onclick=go(1);
+  const nx=el('button','sq',svg('right'));nx.setAttribute('aria-label','Próximo mês');nx.disabled=vmI>=maxM;nx.onclick=go(1);
   nav.append(pv,nx);hd.append(tt,nav);ag.append(hd);
   const C=el('div','cal');
   ['DOM','SEG','TER','QUA','QUI','SEX','SÁB'].forEach(w=>C.append(el('div','wd',w)));
@@ -1535,10 +1535,10 @@ function renderPais(){
   for(let d=1;d<=nd;d++){
     const k=paisVy+'-'+pad(paisVm+1)+'-'+pad(d),x=dayIn(ms,k),cnt=x.log.length,fut=k>today;
     const pend=!fut&&x.plan.some(p=>!planDone(x,p));
-    const b=el('button','d'+(cnt?' has':'')+(k===today?' today':'')+(k===paisSel?' sel':'')+(fut?' fut':''),'<span>'+d+'</span><span class="tk">'+tally(cnt)+'</span>'+(pend?'<span class="pd"></span>':''));
+    const b=el('button','d'+(cnt?' has':'')+(k===today?' today':'')+(k===paisSel?' sel':'')+(fut&&!x.plan.length?' fut':'')+(fut&&x.plan.length?' plan':''),'<span>'+d+'</span><span class="tk">'+tally(cnt)+'</span>'+(pend?'<span class="pd"></span>':''));
     b.setAttribute('aria-label',d+' de '+MES[paisVm]+(cnt?', '+plural(cnt,'serviço','serviços'):', nada feito')+(pend?', com tarefa planejada não feita':''));
     b.setAttribute('aria-pressed',String(k===paisSel));if(k===today)b.setAttribute('aria-current','date');
-    if(fut)b.disabled=true;
+    if(fut&&!x.plan.length)b.disabled=true;
     b.onclick=()=>{paisSel=k;renderPais();const t=$('pDia');if(t)t.scrollIntoView({behavior:'smooth',block:'start'})};
     C.append(b);
   }
@@ -1550,15 +1550,15 @@ function renderPais(){
   B.append(ag);
 
   // ---- dia selecionado ----
-  const k=paisSel,x=dayIn(ms,k),gs=groupDay(x,c),isT=k===today,dd=dateOf(k);
+  const k=paisSel,x=dayIn(ms,k),gs=groupDay(x,c),isT=k===today,dd=dateOf(k),isF=k>today;
   const pl=p=>p.n+(p.v?' · '+p.v:''),pf=x.plan.filter(p=>!planDone(x,p)),pd=x.plan.length-pf.length;
   const h=el('section','card pcard');h.id='pDia';
   h.append(el('span','lbl',(isT?'Hoje · ':'')+WDL[dd.getDay()].toLowerCase()+', '+fmtDM(k)),el('div','pbig','<b>'+x.log.length+'</b><span>'+(x.log.length===1?'serviço feito':'serviços feitos')+'</span>'));
   if(x.plan.length){h.append(el('div','pbar','<i style="width:'+Math.round(pd/x.plan.length*100)+'%"></i>'),el('p','empty',pd+' de '+x.plan.length+' tarefas planejadas feitas'))}
   if(gs.length){const ul=el('ul','list');gs.forEach(g=>{const li=el('li');const ts=g.evs.map(e=>e.t).filter(Boolean);
     li.append(iconBox(g.i),el('span','li-t',esc(g.n)+((g.v||ts.length)?'<small>'+esc([g.v,timesText(ts)].filter(Boolean).join(' · '))+'</small>':'')),el('span','x','×'+g.evs.length));ul.append(li)});h.append(ul)}
-  else h.append(el('p','empty box',isT?'Nada registrado ainda hoje.':'Nada registrado neste dia.'));
-  if(pf.length)h.append(el('span','lbl',isT?'Ainda falta do plano':'Planejado e não feito'),el('p','empty',esc(pf.map(pl).join(' · '))));
+  else if(!isF)h.append(el('p','empty box',isT?'Nada registrado ainda hoje.':'Nada registrado neste dia.'));
+  if(pf.length)h.append(el('span','lbl',isF?'Planejado para este dia':isT?'Ainda falta do plano':'Planejado e não feito'),el('p','empty',esc(pf.map(pl).join(' · '))));
   if(isT){const rot=c.routine.filter(r=>!x.rdone.includes(r.id)).map(r=>r.text);if(rot.length)h.append(el('span','lbl','Rotina ainda não marcada'),el('p','empty',esc(rot.join(' · '))))}
   B.append(h);
 
